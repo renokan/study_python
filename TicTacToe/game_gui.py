@@ -139,13 +139,14 @@ class App:
 
     def add_fields(self):
         """Выводим поля-кнопки на холсте."""
-        field_position = {1: (24, 24), 2: (136, 24), 3: (248, 24),
-                          4: (24, 136), 5: (136, 136), 6: (248, 136),
-                          7: (24, 248), 8: (136, 248), 9: (248, 248)
-                          }
+        # position = [(24, 24), (136, 24), (248, 24),
+        #             (24, 136), (136, 136), (248, 136),
+        #             (24, 248), (136, 248), (248, 248)
+        #             ]
+        position = [(y, x) for x in (24, 136, 248) for y in (24, 136, 248)]
         self.fields_dict = {}
-        for key, value in field_position.items():
-            self.fields_dict[key] = FieldButton(self.reg_fields, key, value[0], value[1])
+        for i in range(1, 10):
+            self.fields_dict[i] = FieldButton(self.reg_fields, i, position[i - 1][0], position[i - 1][1])
 
     def add_region_info(self):
         """Выводим нижний блок - инфа - программы."""

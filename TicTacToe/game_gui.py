@@ -186,17 +186,15 @@ class App:
     def win_list(self):
         """Проверка выигрышных комбинаций или кол-ва свободных полей."""
         # Есть 8 выигрышных комбинаций - 3 по горизонтали, 3 по вертикали и крест
-        xy = self.fields_dict  # Для краткости записи
-        win_list = [[xy[1].field_check, xy[2].field_check, xy[3].field_check],
-                    [xy[4].field_check, xy[5].field_check, xy[6].field_check],
-                    [xy[7].field_check, xy[8].field_check, xy[9].field_check],
-                    [xy[1].field_check, xy[4].field_check, xy[7].field_check],
-                    [xy[2].field_check, xy[5].field_check, xy[8].field_check],
-                    [xy[3].field_check, xy[6].field_check, xy[9].field_check],
-                    [xy[1].field_check, xy[5].field_check, xy[9].field_check],
-                    [xy[3].field_check, xy[5].field_check, xy[7].field_check]
+        win_list = [(1, 2, 3), (4, 5, 6), (7, 8, 9),
+                    (1, 4, 7), (2, 5, 8), (3, 6, 9),
+                    (1, 5, 9), (3, 5, 7)
                     ]
-        return win_list
+
+        def get_win(x):
+            return([self.fields_dict[i].field_check for i in x])
+
+        return([get_win(x) for x in win_list])
 
     def check_win(self):
         """Проверка выигрышных комбинаций или кол-ва свободных полей."""

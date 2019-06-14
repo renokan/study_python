@@ -117,13 +117,13 @@ class App:
         self.frame_start.pack()
         self.gamers = tk.IntVar()
         self.gamers.set(1)
-        select_gm_1 = tk.Radiobutton(self.frame_start, text='You and Computer', variable=self.gamers, value=1)
-        select_gm_2 = tk.Radiobutton(self.frame_start, text='You an other gamer', variable=self.gamers, value=2)
-        select_gm_1.config(bg='white', highlightbackground='white', activebackground='white')
-        select_gm_2.config(bg='white', highlightbackground='white', activebackground='white')
+        self.select_gm_1 = tk.Radiobutton(self.frame_start, text='You and Computer', variable=self.gamers, value=1)
+        self.select_gm_2 = tk.Radiobutton(self.frame_start, text='You an other gamer', variable=self.gamers, value=2)
+        self.select_gm_1.config(bg='white', highlightbackground='white', activebackground='white')
+        self.select_gm_2.config(bg='white', highlightbackground='white', activebackground='white')
         self.btn_start = tk.Button(self.frame_start, text="Start game", command=self.start_game)
-        select_gm_1.place(x=40, y=10)
-        select_gm_2.place(x=40, y=35)
+        self.select_gm_1.place(x=40, y=10)
+        self.select_gm_2.place(x=40, y=35)
         self.btn_start.place(x=240, y=15)
 
     def add_canvas(self):
@@ -170,6 +170,8 @@ class App:
         self.msg_rule.configure(text="Beginning of the game. You and {}.".format(self.user_wait))
         self.msg_info.configure(text="Click on the field if you want to put 'X' or 'O' there.")
         self.btn_start["state"] = "disabled"
+        self.select_gm_1["state"] = "disabled"
+        self.select_gm_2["state"] = "disabled"
         self.add_fields()
 
     def change_move(self):

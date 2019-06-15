@@ -35,14 +35,17 @@ class FieldButton:
         """Функция чтобы изменить поле."""
         self.field.config(state="disabled")
         if self.field["text"] == '':
-            self.field["text"] = game_noliki.xo_go
             game_noliki.game_moves(self.field_check)
+            self.field["text"] = game_noliki.xo_go
             self.field_check = game_noliki.xo_go
+            # Проверяем, есть ли победитель
             temp = game_noliki.check_win()
             if temp:
+                # если да - выводим результат игры
                 game_noliki.msg_result.configure(text=temp)
                 game_over(temp)
             else:
+                # если нет - меняем игроков, далее ходит компьютер или 2 игрок
                 game_noliki.change_move()
                 if game_noliki.users == 1:
                     game_noliki.comp_move()
@@ -117,7 +120,7 @@ class App:
         self.gamers = tk.IntVar()
         self.gamers.set(1)
         self.select_gm_1 = tk.Radiobutton(self.frame_start, text='You and Computer', variable=self.gamers, value=1)
-        self.select_gm_2 = tk.Radiobutton(self.frame_start, text='You an other gamer', variable=self.gamers, value=2)
+        self.select_gm_2 = tk.Radiobutton(self.frame_start, text='You and "User 2"', variable=self.gamers, value=2)
         self.select_gm_1.config(bg='white', highlightbackground='white', activebackground='white')
         self.select_gm_2.config(bg='white', highlightbackground='white', activebackground='white')
         self.btn_start = tk.Button(self.frame_start, text="Start game", command=self.start_game)
@@ -165,7 +168,7 @@ class App:
             self.user_wait = 'Computer'
             self.users = 1
         else:
-            self.user_wait = '"User 1"'
+            self.user_wait = '"User 2"'
             self.users = 2
         self.msg_rule.configure(text="Beginning of the game. You and {}.".format(self.user_wait))
         self.msg_info.configure(text="Click on the field if you want to put 'X' or 'O' there.")

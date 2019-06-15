@@ -28,25 +28,26 @@ class FieldButton:
         """Что делаем при инициализации класса."""
         self.field_check = field_num
         self.field = tk.Button(reg_field, text='', bd=0)
-        self.field.bind('<Button-1>', self.field_change)
+        self.field.bind('<Button-1>', self.field_click)
         self.field.place(x=x, y=y, width=110, height=110)
 
-    def field_change(self, event):
+    def field_click(self, event):
         """Функция чтобы изменить поле."""
         self.field.config(state="disabled")
         if self.field["text"] == '':
             self.field["text"] = game_noliki.xo_go
-            game_noliki.msg_info.configure(text="{0} makes move {1} -> {2}".format(game_noliki.user_go, game_noliki.xo_go, self.field_check))
+            game_noliki.game_moves(self.field_check)
             self.field_check = game_noliki.xo_go
-            if game_noliki.check_win():
-                game_noliki.msg_result.configure(text=game_noliki.check_win())
-                game_over(game_noliki.check_win())
+            temp = game_noliki.check_win()
+            if temp:
+                game_noliki.msg_result.configure(text=temp)
+                game_over(temp)
             else:
                 game_noliki.change_move()
                 if game_noliki.users == 1:
                     game_noliki.comp_move()
 
-    def field_disabled(self):
+    def field_disable(self):
         """Функция чтобы отключить поле."""
         self.field.config(text="*")
         self.field.config(state="disabled")
@@ -55,7 +56,7 @@ class FieldButton:
         """Функция описывающая ход компьютера на нужное поле."""
         self.field.config(state="disabled")
         self.field["text"] = game_noliki.xo_go
-        game_noliki.msg_info.configure(text="{0} makes move {1} -> {2}".format(game_noliki.user_go, game_noliki.xo_go, self.field_check))
+        game_noliki.game_moves(self.field_check)
         self.field_check = game_noliki.xo_go
 
 
@@ -85,9 +86,9 @@ class App:
         """Данные программы."""
         self.user_go = 'You'
         self.user_wait = ''
-        self.xo = ['X', 'O']
         self.xo_go = 'X'
         self.xo_wait = 'O'
+        self.db_moves = []
 
     def app_create(self):
         """Конфигурируем окно программы."""
@@ -105,11 +106,11 @@ class App:
         self.root.geometry('%dx%d+%d+%d' % (width, height, x, y))
         self.root.resizable(False, False)
         # Меню
-        top_menu = tk.Menu(root)
+        top_menu = tk.Menu(self.root)
         self.root.config(menu=top_menu)
         top_menu.add_command(label="About", command=game_info)
         top_menu.add_command(label="Reset", command=game_reset)
-        top_menu.add_command(label="Exit", command=close_win)
+        top_menu.add_command(label="Exit", command=game_exit)
 
     def add_region_start(self):
         """Выводим верхний блок - кнопка старт - программы."""
@@ -199,15 +200,24 @@ class App:
 
     def check_win(self):
         """Проверка выигрышных комбинаций или кол-ва свободных полей."""
-        # Если есть хоть одна выигрышная комбинация, тогда...
         for win in self.win_list():
+            # Если есть хоть одна выигрышная комбинация, тогда...
             if win.count(self.xo_go) == 3:
+                # Добавляем кнопку с логами ходов
+                self.btn_start = tk.Button(self.msg_info, text="Game moves", command=game_log)
+                self.btn_start.pack()
+                # Выключаем свободные кнопки чтобы не кликали
                 for x in self.free_field():
-                    self.fields_dict[x].field_disabled()
+                    self.fields_dict[x].field_disable()
+                # Выводим результат игры
                 return ("Winner {}. Game over.".format(self.user_go))
 
         # Если выигрышных комбинаций нет и закончились свободные ячейки, тогда...
         if len(self.free_field()) == 0:
+            # Добавляем кнопку с логами ходов
+            self.btn_start = tk.Button(self.msg_info, text="Game moves", command=game_log)
+            self.btn_start.pack()
+            # Выводим результат игры
             return ("No winner. Game over.")
 
     def random_field(self):
@@ -257,11 +267,19 @@ class App:
     def comp_move(self):
         """Выбираем куда компьютеру ходить."""
         self.fields_dict[self.effective_step()].comp_step()
-        if self.check_win():
-            self.msg_result.configure(text=self.check_win())
-            game_over(self.check_win())
+        temp = self.check_win()
+        if temp:
+            self.msg_result.configure(text=temp)
+            game_over(temp)
         else:
             self.change_move()
+
+    def game_moves(self, field):
+        """Выводим ход игры и записываем в логи."""
+        move = "{0} makes move {1} -> {2}".format(self.user_go, self.xo_go, field)
+        self.msg_info.configure(text=move)
+        self.db_moves.append(str(move))
+        # print(move)
 
 
 def game_info():
@@ -276,6 +294,12 @@ def game_over(info):
     mb.showinfo(title="Result", message=info)
 
 
+def game_log():
+    """Показываем информацию о завершении игры."""
+    temp = '\n'.join(game_noliki.db_moves)
+    mb.showinfo(title="Game moves", message=temp)
+
+
 def game_reset():
     """Сброс игры."""
     answer = mb.askyesno(title="Reset", message="Reset the game?")
@@ -283,7 +307,7 @@ def game_reset():
         App.app_reset(game_noliki)
 
 
-def close_win():
+def game_exit():
     """Корректное закрытие окна программы."""
     answer = mb.askyesno(title="Exit", message="Close the program?")
     if answer is True:

@@ -47,17 +47,15 @@ class FieldButton:
                 if game_noliki.users == 1:
                     game_noliki.comp_move()
 
-    def field_disable(self):
-        """Функция чтобы отключить поле."""
-        self.field.config(text="*")
+    def field_disable(self, xo_param="*"):
+        """Отключаем нужное поле."""
         self.field.config(state="disabled")
-
-    def comp_step(self):
-        """Функция описывающая ход компьютера на нужное поле."""
-        self.field.config(state="disabled")
-        self.field["text"] = game_noliki.xo_go
-        game_noliki.game_moves(self.field_check)
-        self.field_check = game_noliki.xo_go
+        if xo_param != '*':
+            game_noliki.game_moves(self.field_check)
+            self.field["text"] = xo_param
+            self.field_check = xo_param
+        else:
+            self.field.config(text=xo_param)
 
 
 class App:
@@ -144,7 +142,7 @@ class App:
         #             (24, 136), (136, 136), (248, 136),
         #             (24, 248), (136, 248), (248, 248)
         #             ]
-        position = [(y, x) for x in (24, 136, 248) for y in (24, 136, 248)]
+        position = [(x, y) for y in (24, 136, 248) for x in (24, 136, 248)]
         self.fields_dict = {}
         for i in range(1, 10):
             self.fields_dict[i] = FieldButton(self.reg_fields, i, position[i - 1][0], position[i - 1][1])
@@ -167,7 +165,7 @@ class App:
             self.user_wait = 'Computer'
             self.users = 1
         else:
-            self.user_wait = 'User 1'
+            self.user_wait = '"User 1"'
             self.users = 2
         self.msg_rule.configure(text="Beginning of the game. You and {}.".format(self.user_wait))
         self.msg_info.configure(text="Click on the field if you want to put 'X' or 'O' there.")
@@ -266,7 +264,8 @@ class App:
 
     def comp_move(self):
         """Выбираем куда компьютеру ходить."""
-        self.fields_dict[self.effective_step()].comp_step()
+        num = self.effective_step()
+        self.fields_dict[num].field_disable(self.xo_go)
         temp = self.check_win()
         if temp:
             self.msg_result.configure(text=temp)
@@ -277,9 +276,8 @@ class App:
     def game_moves(self, field):
         """Выводим ход игры и записываем в логи."""
         move = "{0} makes move {1} -> {2}".format(self.user_go, self.xo_go, field)
-        self.msg_info.configure(text=move)
         self.db_moves.append(str(move))
-        # print(move)
+        self.msg_info.configure(text=move)
 
 
 def game_info():

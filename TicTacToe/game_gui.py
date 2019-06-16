@@ -78,7 +78,7 @@ class App:
         self.app_db()
         self.frame_start.destroy()
         self.add_region_start()
-        self.reg_fields.destroy()
+        self.frame_fields.destroy()
         self.add_canvas()
         self.frame_info.destroy()
         self.add_region_info()
@@ -130,9 +130,9 @@ class App:
 
     def add_canvas(self):
         """Выводим средний блок - холст - программы."""
-        self.reg_fields = tk.Frame(self.root, width=400, height=400)
-        self.reg_fields.pack()
-        fields = tk.Canvas(self.reg_fields, width=382, height=382, bg="gray70", bd=0, highlightthickness=0)
+        self.frame_fields = tk.Frame(self.root, width=400, height=400)
+        self.frame_fields.pack()
+        fields = tk.Canvas(self.frame_fields, width=382, height=382, bg="gray70", bd=0, highlightthickness=0)
         fields.create_line(135, 24, 135, 358)
         fields.create_line(246, 24, 246, 358)
         fields.create_line(24, 135, 358, 135)
@@ -148,7 +148,7 @@ class App:
         position = [(x, y) for y in (24, 136, 248) for x in (24, 136, 248)]
         self.fields_dict = {}
         for i in range(1, 10):
-            self.fields_dict[i] = FieldButton(self.reg_fields, i, position[i - 1][0], position[i - 1][1])
+            self.fields_dict[i] = FieldButton(self.frame_fields, i, position[i - 1][0], position[i - 1][1])
 
     def add_region_info(self):
         """Выводим нижний блок - инфа - программы."""

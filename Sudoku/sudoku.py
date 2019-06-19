@@ -20,10 +20,10 @@ class FieldEntry:
         self.num_row, self.num_col = self.row_col()
 
         # Если словарь с группами пустой, тогда нужно его создать
-        if len(FieldEntry.groups) == 0:
+        if len(self.groups) == 0:
             self.group_fields()
         # Перебираем словарь с группами и ищем соотвествие ряда и столбца
-        for key, value in sorted(FieldEntry.groups.items()):
+        for key, value in sorted(self.groups.items()):
             # groups = {1: ((1, 2, 3), (1, 2, 3)), 2: ((1, 2, 3), (4, 5, 6)),
             #           3: ((1, 2, 3), (7, 8, 9)), 4: ((4, 5, 6), (1, 2, 3)),
             #           ...
@@ -46,17 +46,26 @@ class FieldEntry:
         """Проверяем текущий ряд и столбец, возвращаем новые данные."""
         # Сравниваем текущий столбец и длину грани нашей матрицы, если
         # выходим за грань - тогда переходим на новый ряд и первый столбец
-        if FieldEntry.cols > self.side:
+        if self.cols > self.side:
             FieldEntry.rows += 1
             FieldEntry.cols = 1
-        result = (FieldEntry.rows, FieldEntry.cols)
+        result = (self.rows, self.cols)
         FieldEntry.cols += 1
         return result
 
     def group_fields(self):
         """Словарь, где ключ это номер группы, а значение (ряды и столбцы)."""
-        list_row_col = ((1, 2, 3), (4, 5, 6), (7, 8, 9))
+        step = int(sqrt(self.side))  # 9 -> 3 / 16 -> 4
+        list_num = [x for x in range(1, self.side + 1)]  # [1, 2, 3, 4, ...]
+        x = 0
+        list_row_col = []
+        for i in range(step):
+            list_row_col.extend([list_num[x:x + step]])
+            x += step
+        # list_row_col = [(1, 2, 3), (4, 5, 6), (7, 8, 9)]
         temp = [(l_row, l_col) for l_row in list_row_col for l_col in list_row_col]
+        # [([1, 2, 3], [1, 2, 3]), ([1, 2, 3], [4, 5, 6]), ([1, 2, 3], [7, 8, 9]),
+        #  ([4, 5, 6], [1, 2, 3]), ([4, 5, 6], [4, 5, 6]), ([4, 5, 6], [7, 8, 9]),
         FieldEntry.groups = {k + 1: temp[k] for k in range(len(temp))}
         # groups = {1: ((1, 2, 3), (1, 2, 3)), 2: ((1, 2, 3), (4, 5, 6)),
         #           3: ((1, 2, 3), (7, 8, 9)), 4: ((4, 5, 6), (1, 2, 3)),

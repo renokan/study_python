@@ -186,15 +186,43 @@ class App:
             self.btn_start["state"] = "disabled"
             self.msg_info.configure(text="You have filled out {0} fields, you need at least five.".format(sum_selected))
 
-    def check_fields(self):
+    def check_selected(self):
         """Проверяем заполненные поля."""
-        pass
-        # print(self.dict_selected)
+        self.selected_rows = {k: [] for k in range(1, 10)}
+        self.selected_cols = {k: [] for k in range(1, 10)}
+        self.selected_groups = {k: [] for k in range(1, 10)}
+        # Перебираем заполненные поля
+        for key, field in self.dict_selected.items():
+            num_row = self.fields_dict[key].num_row
+            num_col = self.fields_dict[key].num_col
+            num_group = self.fields_dict[key].num_group
+            self.selected_rows[num_row].append(field)
+            self.selected_cols[num_col].append(field)
+            self.selected_groups[num_group].append(field)
+        # Проверяем чтобы в строке не было повторений
+        for key, list in self.selected_rows.items():
+            for x in range(1, 10):
+                if list.count(x) > 1:
+                    return "You have entered several '{}' values ​​in the row.".format(x)
+        # Проверяем чтобы в столбце не было повторений
+        for key, list in self.selected_cols.items():
+            for x in range(1, 10):
+                if list.count(x) > 1:
+                    return "You have entered several '{}' values ​​in the column.".format(x)
+        # Проверяем чтобы в группе не было повторений
+        for key, list in self.selected_groups.items():
+            for x in range(1, 10):
+                if list.count(x) > 1:
+                    return "You have entered several '{}' values ​​in the group.".format(x)
 
     def start_game(self):
         """Запуск программы по кнопке Старт."""
         self.btn_start["state"] = "disabled"
-        # self.check_fields()
+        check = self.check_selected()
+        if check:
+            self.msg_info.configure(text=check)
+        else:
+            self.msg_info.configure(text="Ok")
         # # Перебираем все поля
         # for x in self.fields_dict.values():
         #     x.insert_num()

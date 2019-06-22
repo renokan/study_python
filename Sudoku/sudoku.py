@@ -15,18 +15,15 @@ class FieldEntry:
         self.field_get = ''
         self.field_search = [x for x in range(1, 10)]
         self.field = tk.Entry(reg_field, bd=1, bg='white', justify="center")
-        self.field.bind('<FocusOut>', self.check_get)
+        self.field.bind('<FocusOut>', self.check_input)
         self.field.place(x=f_xy[0], y=f_xy[1], width=48, height=48)
 
-        # self.field.insert(0, self.num_field)
-        # self.field.insert(0, self.num_group)
-
-    def field_insert(self, num_insert):
+    def insert_num(self, num_insert):
         """Записываем число в нужное поле."""
         self.field.delete(0, "end")
         self.field.insert(0, num_insert)
 
-    def check_get(self, event):
+    def check_input(self, event):
         """Проверяем заполнение полей."""
         try:
             # Пробуем введенный параметр привести к целому числу
@@ -99,12 +96,9 @@ class App:
         top_menu.add_command(label="Reset", command=game_reset)
         top_menu.add_command(label="Exit", command=game_exit)
 
-        line = tk.Frame(self.root, width=480, height=8, bg="white")
-        line.pack()
-
     def add_canvas(self):
         """Выводим блок - холст - программы."""
-        self.frame_fields = tk.Frame(self.root, width=480, height=480)
+        self.frame_fields = tk.Frame(self.root, width=480, height=480, bg="white", bd=8)
         self.frame_fields.pack()
         fields = tk.Canvas(self.frame_fields, width=464, height=464, bg="gray70", bd=0, highlightthickness=0)
         fields.create_rectangle(1, 1, 463, 463, width=2)
@@ -176,11 +170,13 @@ class App:
         self.msg_info.configure(text="Fill in five or more fields to get started.")
 
     def selected_fields(self):
-        """Проверяем кол-во заполненных полей."""
+        """Проверяем заполненные поля."""
         sum_selected = 0
+        self.dict_selected = {}
         # Перебираем все поля
-        for x in self.fields_dict.values():
-            if x.field_get in range(1, 10):
+        for key, field in self.fields_dict.items():
+            if field.field_get in range(1, 10):
+                self.dict_selected[key] = field.field_get
                 sum_selected += 1
         # Если их 5 или больше, тогда вкл кнопку Старт
         if sum_selected >= 5:
@@ -190,12 +186,18 @@ class App:
             self.btn_start["state"] = "disabled"
             self.msg_info.configure(text="You have filled out {0} fields, you need at least five.".format(sum_selected))
 
+    def check_fields(self):
+        """Проверяем заполненные поля."""
+        pass
+        # print(self.dict_selected)
+
     def start_game(self):
         """Запуск программы по кнопке Старт."""
         self.btn_start["state"] = "disabled"
+        # self.check_fields()
         # # Перебираем все поля
         # for x in self.fields_dict.values():
-        #     x.field_insert()
+        #     x.insert_num()
 
 
 def game_info():

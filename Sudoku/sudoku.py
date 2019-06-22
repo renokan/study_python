@@ -1,79 +1,29 @@
 """Game "Sudoku"."""
 import tkinter as tk
 from tkinter import messagebox as mb
-from math import sqrt
 
 
 class FieldEntry:
     """Это класс полей (тип Entry) для ввода цифр."""
 
-    # Глобальные переменные: ряд, столбец, группы полей, размеры грани и полей
-    rows = 1
-    cols = 1
-    groups = {}
-    side = 9
-    size = 48
-
-    def __init__(self, reg_field, num_field, pos_xy):
+    def __init__(self, reg_field, f_xy, f_num, f_row, f_col, f_group):
         """Что делаем при инициализации класса."""
-        self.num_field = num_field
-        self.num_row, self.num_col = self.row_col()
-
-        # Если словарь с группами пустой, тогда нужно его создать
-        if len(self.groups) == 0:
-            self.group_fields()
-        # Перебираем словарь с группами и ищем соотвествие ряда и столбца
-        for key, value in sorted(self.groups.items()):
-            # groups = {1: ((1, 2, 3), (1, 2, 3)), 2: ((1, 2, 3), (4, 5, 6)),
-            #           3: ((1, 2, 3), (7, 8, 9)), 4: ((4, 5, 6), (1, 2, 3)),
-            #           ...
-            #           }
-            if self.num_row in value[0]:
-                if self.num_col in value[1]:
-                    self.num_group = key
-
+        self.num_field = f_num
+        self.num_row = f_row
+        self.num_col = f_col
+        self.num_group = f_group
         self.field_get = ''
         self.field_search = [x for x in range(1, 10)]
-
         self.field = tk.Entry(reg_field, bd=1, bg='white', justify="center")
         self.field.bind('<FocusOut>', self.check_get)
-        self.field.place(x=pos_xy[0], y=pos_xy[1], width=self.size, height=self.size)
+        self.field.place(x=f_xy[0], y=f_xy[1], width=48, height=48)
 
         # self.field.insert(0, self.num_field)
         # self.field.insert(0, self.num_group)
 
-    def row_col(self):
-        """Проверяем текущий ряд и столбец, возвращаем новые данные."""
-        # Сравниваем текущий столбец и длину грани нашей матрицы, если
-        # выходим за грань - тогда переходим на новый ряд и первый столбец
-        if self.cols > self.side:
-            FieldEntry.rows += 1
-            FieldEntry.cols = 1
-        result = (self.rows, self.cols)
-        FieldEntry.cols += 1
-        return result
-
-    def group_fields(self):
-        """Словарь, где ключ это номер группы, а значение (ряды и столбцы)."""
-        step = int(sqrt(self.side))  # 9 -> 3 / 16 -> 4
-        list_num = [x for x in range(1, self.side + 1)]  # [1, 2, 3, 4, ...]
-        x = 0
-        list_row_col = []
-        for i in range(step):
-            list_row_col.extend([list_num[x:x + step]])
-            x += step
-        # list_row_col = [(1, 2, 3), (4, 5, 6), (7, 8, 9)]
-        temp = [(l_row, l_col) for l_row in list_row_col for l_col in list_row_col]
-        # [([1, 2, 3], [1, 2, 3]), ([1, 2, 3], [4, 5, 6]), ([1, 2, 3], [7, 8, 9]),
-        #  ([4, 5, 6], [1, 2, 3]), ([4, 5, 6], [4, 5, 6]), ([4, 5, 6], [7, 8, 9]),
-        FieldEntry.groups = {k + 1: temp[k] for k in range(len(temp))}
-        # groups = {1: ((1, 2, 3), (1, 2, 3)), 2: ((1, 2, 3), (4, 5, 6)),
-        #           3: ((1, 2, 3), (7, 8, 9)), 4: ((4, 5, 6), (1, 2, 3)),
-        #           ...
-        #           }
-
     def field_insert(self, num_insert):
         """Записываем число в нужное поле."""
+        self.field.delete(0, "end")
         self.field.insert(0, num_insert)
 
     def check_get(self, event):
@@ -172,15 +122,42 @@ class App:
 
     def add_fields(self):
         """Выводим поля на холсте."""
+        self.fields_dict = {}  # Словарь для хранения полей
         pos_xy = [3, 54, 105, 157, 208, 259, 311, 362, 413]
         pos_field = [(x, y) for y in pos_xy for x in pos_xy]
         # pos_field = [(3, 3), (54, 3), (105, 3), ...]
-        # len(pos_field) - 81 / 9*9
-        FieldEntry.side = int(sqrt(len(pos_field)))
-        FieldEntry.size = 48
-        self.fields_dict = {}
-        for i in range(len(pos_field)):
-            self.fields_dict[i + 1] = FieldEntry(self.frame_fields, i + 1, pos_field[i])
+        rows = 1  # начальные значения для строк
+        cols = 1  # начальные значения для столбцов
+        # Заполняем 81 поле, предварительно определив нужные параметры
+        for i in range(1, 82):
+            f_num = i
+            if cols > 9:
+                rows += 1
+                cols = 1
+            f_row = rows
+            f_col = cols
+            cols += 1
+            # Ищем группу по нужной диапазону строк и столбцов
+            if f_row in [1, 2, 3] and f_col in [1, 2, 3]:
+                f_group = 1
+            if f_row in [1, 2, 3] and f_col in [4, 5, 6]:
+                f_group = 2
+            if f_row in [1, 2, 3] and f_col in [7, 8, 9]:
+                f_group = 3
+            if f_row in [4, 5, 6] and f_col in [1, 2, 3]:
+                f_group = 4
+            if f_row in [4, 5, 6] and f_col in [4, 5, 6]:
+                f_group = 5
+            if f_row in [4, 5, 6] and f_col in [7, 8, 9]:
+                f_group = 6
+            if f_row in [7, 8, 9] and f_col in [1, 2, 3]:
+                f_group = 7
+            if f_row in [7, 8, 9] and f_col in [4, 5, 6]:
+                f_group = 8
+            if f_row in [7, 8, 9] and f_col in [7, 8, 9]:
+                f_group = 9
+            # Выводим нужное поле
+            self.fields_dict[i] = FieldEntry(self.frame_fields, pos_field[i - 1], f_num, f_row, f_col, f_group)
 
     def add_region_start(self):
         """Выводим блок - кнопка старт - программы."""

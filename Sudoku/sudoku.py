@@ -221,6 +221,27 @@ class App:
                 if list.count(x) > 1:
                     return "You have entered several '{}' values ​​in the group.".format(x)
 
+    def upd_search(self, f_num, f_value):
+        """Меняем нужные значения по номеру поля."""
+        self.fields_dict[f_num].field_search = []
+        self.fields_dict[f_num].field_insert = f_value
+
+        n_row = self.fields_dict[f_num].num_row
+        n_col = self.fields_dict[f_num].num_col
+        n_group = self.fields_dict[f_num].num_group
+        upd_row = self.search_rows[n_row]
+        upd_col = self.search_cols[n_col]
+        upd_group = self.search_groups[n_group]
+        if f_value not in upd_row:
+            upd_row.append(f_value)
+        if f_value not in upd_col:
+            upd_col.append(f_value)
+        if f_value not in upd_group:
+            upd_group.append(f_value)
+        self.search_rows[n_row] = upd_row
+        self.search_cols[n_col] = upd_col
+        self.search_groups[n_group] = upd_group
+
     def search_numbers(self):
         """Ищем номера."""
         self.search_rows = self.selected_rows.copy()
@@ -243,44 +264,32 @@ class App:
         stop = 0
         while stop < 900:
 
-            for key, value in self.search_rows.items():
-                for row, list_fields in self.fields_rows.items():
-                    if key == row:
-                        for x in list_fields:
-                            old = self.fields_dict[x].field_search
-                            new = [i for i in old if not i in value]
-                            if len(new) == 1:
-                                self.fields_dict[x].field_search = []
-                                self.fields_dict[x].field_insert = new[0]
-                                self.search_rows[key].append(new[0])
-                            else:
-                                self.fields_dict[x].field_search = new
-
-            for key, value in self.search_cols.items():
-                for row, list_fields in self.fields_cols.items():
-                    if key == row:
-                        for x in list_fields:
-                            old = self.fields_dict[x].field_search
-                            new = [i for i in old if not i in value]
-                            if len(new) == 1:
-                                self.fields_dict[x].field_search = []
-                                self.fields_dict[x].field_insert = new[0]
-                                self.search_cols[key].append(new[0])
-                            else:
-                                self.fields_dict[x].field_search = new
-
-            for key, value in self.search_groups.items():
-                for row, list_fields in self.fields_groups.items():
-                    if key == row:
-                        for x in list_fields:
-                            old = self.fields_dict[x].field_search
-                            new = [i for i in old if not i in value]
-                            if len(new) == 1:
-                                self.fields_dict[x].field_search = []
-                                self.fields_dict[x].field_insert = new[0]
-                                self.search_groups[key].append(new[0])
-                            else:
-                                self.fields_dict[x].field_search = new
+            for i in range(1, 82):
+                if len(self.fields_dict[i].field_search) > 0:
+                    # Rows
+                    x = self.fields_dict[i].num_row
+                    old = self.fields_dict[i].field_search
+                    new = [i for i in old if i not in self.search_rows[x]]
+                    if len(new) == 1:
+                        self.upd_search(i, new[0])
+                    else:
+                        self.fields_dict[i].field_search = new
+                    # Cols
+                    x = self.fields_dict[i].num_col
+                    old = self.fields_dict[i].field_search
+                    new = [i for i in old if i not in self.search_cols[x]]
+                    if len(new) == 1:
+                        self.upd_search(i, new[0])
+                    else:
+                        self.fields_dict[i].field_search = new
+                    # Groups
+                    x = self.fields_dict[i].num_group
+                    old = self.fields_dict[i].field_search
+                    new = [i for i in old if i not in self.search_groups[x]]
+                    if len(new) == 1:
+                        self.upd_search(i, new[0])
+                    else:
+                        self.fields_dict[i].field_search = new
 
             stop += 1
 
@@ -310,6 +319,11 @@ class App:
             p_6 = self.fields_dict[i].field_insert
             p_7 = self.fields_dict[i].field_search
             print("{0}: {1} - {2} - {3} - {4} - {5} - {6}".format(p_1, p_2, p_3, p_4, p_5, p_6, p_7))
+
+        print()
+        print("self.search_rows: ", self.search_rows)
+        print("self.search_cols: ", self.search_cols)
+        print("self.search_groups: ", self.search_groups)
 
     def test_insert(self):
         """Для теста печатем все поля с нужными параметрами."""

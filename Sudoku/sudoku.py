@@ -13,7 +13,8 @@ class FieldEntry:
         self.num_col = f_col
         self.num_group = f_group
         self.field_get = ''
-        self.field_search = [x for x in range(1, 10)]
+        self.field_search = None
+        self.field_insert = ''
         self.field = tk.Entry(reg_field, bd=1, bg='white', justify="center")
         self.field.bind('<FocusOut>', self.check_input)
         self.field.place(x=f_xy[0], y=f_xy[1], width=48, height=48)
@@ -153,6 +154,11 @@ class App:
             # Выводим нужное поле
             self.fields_dict[i] = FieldEntry(self.frame_fields, pos_field[i - 1], f_num, f_row, f_col, f_group)
 
+        # Формируем словари полей для строк, столбцов и групп. Для поиска надо.
+        self.fields_rows = {k: [i for i in range(1, 82) if self.fields_dict[i].num_row == k] for k in range(1, 10)}
+        self.fields_cols = {k: [i for i in range(1, 82) if self.fields_dict[i].num_col == k] for k in range(1, 10)}
+        self.fields_groups = {k: [i for i in range(1, 82) if self.fields_dict[i].num_group == k] for k in range(1, 10)}
+
     def add_region_start(self):
         """Выводим блок - кнопка старт - программы."""
         self.frame_start = tk.Frame(self.root, width=480, height=60, bg="white")
@@ -215,6 +221,69 @@ class App:
                 if list.count(x) > 1:
                     return "You have entered several '{}' values ​​in the group.".format(x)
 
+    def search_numbers(self):
+        """Ищем номера."""
+        self.search_rows = self.selected_rows.copy()
+        self.search_cols = self.selected_cols.copy()
+        self.search_groups = self.selected_groups.copy()
+        # print("self.search_rows: ", self.search_rows)
+        # print("self.search_cols: ", self.search_cols)
+        # print("self.search_groups: ", self.search_groups)
+        # print("self.fields_rows: ", self.fields_rows)
+        # print("self.fields_cols: ", self.fields_cols)
+        # print("self.fields_groups: ", self.fields_groups)
+
+        # Перебираем все поля и заполняем исходные данные
+        for i in range(1, 82):
+            self.fields_dict[i].field_search = [x for x in range(1, 10)]
+            if self.fields_dict[i].field_get != '':
+                self.fields_dict[i].field_search = []
+                self.fields_dict[i].field_insert = 0
+
+        stop = 0
+        while stop < 900:
+
+            for key, value in self.search_rows.items():
+                for row, list_fields in self.fields_rows.items():
+                    if key == row:
+                        for x in list_fields:
+                            old = self.fields_dict[x].field_search
+                            new = [i for i in old if not i in value]
+                            if len(new) == 1:
+                                self.fields_dict[x].field_search = []
+                                self.fields_dict[x].field_insert = new[0]
+                                self.search_rows[key].append(new[0])
+                            else:
+                                self.fields_dict[x].field_search = new
+
+            for key, value in self.search_cols.items():
+                for row, list_fields in self.fields_cols.items():
+                    if key == row:
+                        for x in list_fields:
+                            old = self.fields_dict[x].field_search
+                            new = [i for i in old if not i in value]
+                            if len(new) == 1:
+                                self.fields_dict[x].field_search = []
+                                self.fields_dict[x].field_insert = new[0]
+                                self.search_cols[key].append(new[0])
+                            else:
+                                self.fields_dict[x].field_search = new
+
+            for key, value in self.search_groups.items():
+                for row, list_fields in self.fields_groups.items():
+                    if key == row:
+                        for x in list_fields:
+                            old = self.fields_dict[x].field_search
+                            new = [i for i in old if not i in value]
+                            if len(new) == 1:
+                                self.fields_dict[x].field_search = []
+                                self.fields_dict[x].field_insert = new[0]
+                                self.search_groups[key].append(new[0])
+                            else:
+                                self.fields_dict[x].field_search = new
+
+            stop += 1
+
     def start_game(self):
         """Запуск программы по кнопке Старт."""
         self.btn_start["state"] = "disabled"
@@ -222,10 +291,31 @@ class App:
         if check:
             self.msg_info.configure(text=check)
         else:
-            self.msg_info.configure(text="Ok")
-        # # Перебираем все поля
-        # for x in self.fields_dict.values():
-        #     x.insert_num()
+            check = self.search_numbers()
+            if check:
+                self.msg_info.configure(text=check)
+            else:
+                self.msg_info.configure(text="Ok")
+                # self.print_fields()
+                self.test_insert()
+
+    def print_fields(self):
+        """Для теста печатем все поля с нужными параметрами."""
+        for i in range(1, 82):
+            p_1 = self.fields_dict[i].num_field
+            p_2 = self.fields_dict[i].num_row
+            p_3 = self.fields_dict[i].num_col
+            p_4 = self.fields_dict[i].num_group
+            p_5 = self.fields_dict[i].field_get
+            p_6 = self.fields_dict[i].field_insert
+            p_7 = self.fields_dict[i].field_search
+            print("{0}: {1} - {2} - {3} - {4} - {5} - {6}".format(p_1, p_2, p_3, p_4, p_5, p_6, p_7))
+
+    def test_insert(self):
+        """Для теста печатем все поля с нужными параметрами."""
+        for i in range(1, 82):
+            if self.fields_dict[i].field_insert in range(1, 10):
+                self.fields_dict[i].insert_num(self.fields_dict[i].field_insert)
 
 
 def game_info():

@@ -1,16 +1,18 @@
 """Game "Sudoku"."""
 import tkinter as tk
 from tkinter import messagebox as mb
+import copy
 
 
 def testing(start_game):
     """Выводим получившиеся результаты, для тестирования."""
     def wrapper(self):
-        start_game(self)
+        print("Before start")
         print("self.fields_rows: ", self.fields_rows)
         print("self.fields_cols: ", self.fields_cols)
         print("self.fields_groups: ", self.fields_groups)
-        print()
+        print("Start...")
+        start_game(self)
         print("self.selected_rows: ", self.selected_rows)
         print("self.selected_cols: ", self.selected_cols)
         print("self.selected_groups: ", self.selected_groups)
@@ -272,9 +274,9 @@ class App:
 
     def search_numbers(self):
         """Ищем номера."""
-        self.search_rows = self.selected_rows.copy()
-        self.search_cols = self.selected_cols.copy()
-        self.search_groups = self.selected_groups.copy()
+        self.search_rows = copy.deepcopy(self.selected_rows)
+        self.search_cols = copy.deepcopy(self.selected_cols)
+        self.search_groups = copy.deepcopy(self.selected_groups)
 
         # Перебираем все поля и заполняем исходные данные
         for i in range(1, 82):

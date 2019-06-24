@@ -11,8 +11,8 @@ def testing(start_game):
         print("self.fields_rows: ", self.fields_rows)
         print("self.fields_cols: ", self.fields_cols)
         print("self.fields_groups: ", self.fields_groups)
-        print("Start...")
         start_game(self)
+        print("Start...")
         print("self.selected_rows: ", self.selected_rows)
         print("self.selected_cols: ", self.selected_cols)
         print("self.selected_groups: ", self.selected_groups)
@@ -126,7 +126,7 @@ class App:
         self.root.config(menu=top_menu)
         top_menu.add_command(label="About", command=game_info)
         top_menu.add_command(label="Reset", command=game_reset)
-        top_menu.add_command(label="Example", command=self.test_input)
+        top_menu.add_command(label="Example", command=self.input_example)
         top_menu.add_command(label="Exit", command=game_exit)
 
     def add_canvas(self):
@@ -147,7 +147,6 @@ class App:
         fields.pack()
         self.add_fields()
 
-    # @test_input
     def add_fields(self):
         """Выводим поля на холсте."""
         self.fields_dict = {}  # Словарь для хранения полей
@@ -336,16 +335,16 @@ class App:
                 self.msg_info.configure(text=check)
             else:
                 self.msg_info.configure(text="Ok")
-                # self.print_fields()
-                self.test_insert()
+                # Печатаем итоговый результат
+                self.insert_result()
 
-    def test_insert(self):
-        """Для теста печатем все поля с нужными параметрами."""
+    def insert_result(self):
+        """Вводим найденные значения."""
         for i in range(1, 82):
             if self.fields_dict[i].field_insert in range(1, 10):
                 self.fields_dict[i].insert_num(self.fields_dict[i].field_insert)
 
-    def test_input(self):
+    def input_example(self):
         """Вводим значения по умолчанию, для тестирования."""
         input_n = {1: '', 2: 5, 3: 9, 4: 3, 5: 1, 6: 7, 7: '', 8: '', 9: 8,
                    10: '', 11: '', 12: 4, 13: 2, 14: 9, 15: '', 16: '', 17: 1, 18: 3,

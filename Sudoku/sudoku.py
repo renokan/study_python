@@ -338,12 +338,6 @@ class App:
                 # Печатаем итоговый результат
                 self.insert_result()
 
-    def insert_result(self):
-        """Вводим найденные значения."""
-        for i in range(1, 82):
-            if self.fields_dict[i].field_insert in range(1, 10):
-                self.fields_dict[i].insert_num(self.fields_dict[i].field_insert)
-
     def input_example(self):
         """Вводим значения по умолчанию, для тестирования."""
         input_n = {1: '', 2: 5, 3: 9, 4: 3, 5: 1, 6: 7, 7: '', 8: '', 9: 8,
@@ -363,8 +357,14 @@ class App:
                 self.fields_dict[key].field_get = value
                 self.fields_dict[key].field.configure(bg='lightgrey')
 
+        # Проверяем заполненные поля
         self.selected_fields()
 
+    def insert_result(self):
+        """Вводим найденные значения."""
+        for i in range(1, 82):
+            if self.fields_dict[i].field_insert in range(1, 10):
+                self.fields_dict[i].insert_num(self.fields_dict[i].field_insert)
 
 
 def game_info():

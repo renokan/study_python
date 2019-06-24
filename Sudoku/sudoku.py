@@ -276,28 +276,20 @@ class App:
         col = self.fields_dict[f_num].num_col
         group = self.fields_dict[f_num].num_group
 
-        upd_row = self.search_rows[row]
-        upd_col = self.search_cols[col]
-        upd_group = self.search_groups[group]
-
-        if f_value not in upd_row:
-            upd_row.append(f_value)
+        if f_value not in self.search_rows[row]:
+            self.search_rows[row].append(f_value)
         if f_num in self.fields_rows[row]:
             self.fields_rows[row].remove(f_num)
 
-        if f_value not in upd_col:
-            upd_col.append(f_value)
+        if f_value not in self.search_cols[col]:
+            self.search_cols[col].append(f_value)
         if f_num in self.fields_cols[col]:
             self.fields_cols[col].remove(f_num)
 
-        if f_value not in upd_group:
-            upd_group.append(f_value)
+        if f_value not in self.search_groups[group]:
+            self.search_groups[group].append(f_value)
         if f_num in self.fields_groups[group]:
             self.fields_groups[group].remove(f_num)
-
-        self.search_rows[row] = upd_row
-        self.search_cols[col] = upd_col
-        self.search_groups[group] = upd_group
 
     def search_numbers(self):
         """Ищем номера."""

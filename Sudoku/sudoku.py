@@ -221,11 +221,8 @@ class App:
                 if list.count(x) > 1:
                     return "You have entered several '{}' values ​​in the group.".format(x)
 
-    def upd_search(self, f_num, f_value):
-        """Меняем нужные значения по номеру поля."""
-        self.fields_dict[f_num].field_search = []
-        self.fields_dict[f_num].field_insert = f_value
-
+    def upd_dicts(self, f_num, f_value):
+        """Обновляем словари, исходные данные берём из найденного значения."""
         n_row = self.fields_dict[f_num].num_row
         n_col = self.fields_dict[f_num].num_col
         n_group = self.fields_dict[f_num].num_group
@@ -271,7 +268,9 @@ class App:
                     old = self.fields_dict[i].field_search
                     new = [i for i in old if i not in self.search_rows[x]]
                     if len(new) == 1:
-                        self.upd_search(i, new[0])
+                        self.fields_dict[i].field_search = []
+                        self.fields_dict[i].field_insert = new[0]
+                        self.upd_dicts(i, new[0])
                     else:
                         self.fields_dict[i].field_search = new
                     # Cols
@@ -279,7 +278,9 @@ class App:
                     old = self.fields_dict[i].field_search
                     new = [i for i in old if i not in self.search_cols[x]]
                     if len(new) == 1:
-                        self.upd_search(i, new[0])
+                        self.fields_dict[i].field_search = []
+                        self.fields_dict[i].field_insert = new[0]
+                        self.upd_dicts(i, new[0])
                     else:
                         self.fields_dict[i].field_search = new
                     # Groups
@@ -287,7 +288,9 @@ class App:
                     old = self.fields_dict[i].field_search
                     new = [i for i in old if i not in self.search_groups[x]]
                     if len(new) == 1:
-                        self.upd_search(i, new[0])
+                        self.fields_dict[i].field_search = []
+                        self.fields_dict[i].field_insert = new[0]
+                        self.upd_dicts(i, new[0])
                     else:
                         self.fields_dict[i].field_search = new
 

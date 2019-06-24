@@ -7,10 +7,10 @@ import copy
 def testing(start_game):
     """Выводим получившиеся результаты, для тестирования."""
     def wrapper(self):
-        print("Before start")
-        print("self.fields_rows: ", self.fields_rows)
-        print("self.fields_cols: ", self.fields_cols)
-        print("self.fields_groups: ", self.fields_groups)
+        # print("Before start")
+        # print("self.fields_rows: ", self.fields_rows)
+        # print("self.fields_cols: ", self.fields_cols)
+        # print("self.fields_groups: ", self.fields_groups)
         start_game(self)
         print("Start...")
         print("self.selected_rows: ", self.selected_rows)
@@ -20,6 +20,10 @@ def testing(start_game):
         print("self.search_rows: ", self.search_rows)
         print("self.search_cols: ", self.search_cols)
         print("self.search_groups: ", self.search_groups)
+        print()
+        print("self.fields_rows: ", self.fields_rows)
+        print("self.fields_cols: ", self.fields_cols)
+        print("self.fields_groups: ", self.fields_groups)
         print()
         for i in range(1, 82):
             p_1 = self.fields_dict[i].num_field
@@ -186,10 +190,10 @@ class App:
             # Выводим нужное поле
             self.fields_dict[i] = FieldEntry(self.frame_fields, pos_field[i - 1], f_num, f_row, f_col, f_group)
 
-        # Формируем словари полей для строк, столбцов и групп. Для поиска надо.
-        self.fields_rows = {k: [i for i in range(1, 82) if self.fields_dict[i].num_row == k] for k in range(1, 10)}
-        self.fields_cols = {k: [i for i in range(1, 82) if self.fields_dict[i].num_col == k] for k in range(1, 10)}
-        self.fields_groups = {k: [i for i in range(1, 82) if self.fields_dict[i].num_group == k] for k in range(1, 10)}
+        # # Формируем словари полей для строк, столбцов и групп. Для поиска надо.
+        # self.fields_rows = {k: [i for i in range(1, 82) if self.fields_dict[i].num_row == k] for k in range(1, 10)}
+        # self.fields_cols = {k: [i for i in range(1, 82) if self.fields_dict[i].num_col == k] for k in range(1, 10)}
+        # self.fields_groups = {k: [i for i in range(1, 82) if self.fields_dict[i].num_group == k] for k in range(1, 10)}
 
     def add_region_start(self):
         """Выводим блок - кнопка старт - программы."""
@@ -226,6 +230,11 @@ class App:
 
     def check_selected(self):
         """Проверяем заполненные поля."""
+        # Формируем словари полей для строк, столбцов и групп. Для поиска надо.
+        self.fields_rows = {k: [i for i in range(1, 82) if self.fields_dict[i].num_row == k] for k in range(1, 10)}
+        self.fields_cols = {k: [i for i in range(1, 82) if self.fields_dict[i].num_col == k] for k in range(1, 10)}
+        self.fields_groups = {k: [i for i in range(1, 82) if self.fields_dict[i].num_group == k] for k in range(1, 10)}
+        # Формируем словари ...
         self.selected_rows = {k: [] for k in range(1, 10)}
         self.selected_cols = {k: [] for k in range(1, 10)}
         self.selected_groups = {k: [] for k in range(1, 10)}
@@ -234,9 +243,17 @@ class App:
             num_row = self.fields_dict[key].num_row
             num_col = self.fields_dict[key].num_col
             num_group = self.fields_dict[key].num_group
+            # Формируем (добавляем значения) словарь
             self.selected_rows[num_row].append(field)
             self.selected_cols[num_col].append(field)
             self.selected_groups[num_group].append(field)
+            # Формируем (удаляем номера полей) словарь
+            if key in self.fields_rows[num_row]:
+                self.fields_rows[num_row].remove(key)
+            if key in self.fields_cols[num_col]:
+                self.fields_cols[num_col].remove(key)
+            if key in self.fields_groups[num_group]:
+                self.fields_groups[num_group].remove(key)
         # Проверяем чтобы в строке не было повторений
         for key, list in self.selected_rows.items():
             for x in range(1, 10):
@@ -255,21 +272,32 @@ class App:
 
     def upd_dicts(self, f_num, f_value):
         """Обновляем словари, исходные данные берём из найденного значения."""
-        n_row = self.fields_dict[f_num].num_row
-        n_col = self.fields_dict[f_num].num_col
-        n_group = self.fields_dict[f_num].num_group
-        upd_row = self.search_rows[n_row]
-        upd_col = self.search_cols[n_col]
-        upd_group = self.search_groups[n_group]
+        row = self.fields_dict[f_num].num_row
+        col = self.fields_dict[f_num].num_col
+        group = self.fields_dict[f_num].num_group
+
+        upd_row = self.search_rows[row]
+        upd_col = self.search_cols[col]
+        upd_group = self.search_groups[group]
+
         if f_value not in upd_row:
             upd_row.append(f_value)
+        if f_num in self.fields_rows[row]:
+            self.fields_rows[row].remove(f_num)
+
         if f_value not in upd_col:
             upd_col.append(f_value)
+        if f_num in self.fields_cols[col]:
+            self.fields_cols[col].remove(f_num)
+
         if f_value not in upd_group:
             upd_group.append(f_value)
-        self.search_rows[n_row] = upd_row
-        self.search_cols[n_col] = upd_col
-        self.search_groups[n_group] = upd_group
+        if f_num in self.fields_groups[group]:
+            self.fields_groups[group].remove(f_num)
+
+        self.search_rows[row] = upd_row
+        self.search_cols[col] = upd_col
+        self.search_groups[group] = upd_group
 
     def search_numbers(self):
         """Ищем номера."""

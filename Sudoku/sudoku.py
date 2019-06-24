@@ -3,6 +3,58 @@ import tkinter as tk
 from tkinter import messagebox as mb
 
 
+def test_input(add_fields):
+    """Вводим значения по умолчанию, для тестирования."""
+    input_n = {1: '', 2: 5, 3: 9, 4: 3, 5: 1, 6: 7, 7: '', 8: '', 9: 8,
+               10: '', 11: '', 12: 4, 13: 2, 14: 9, 15: '', 16: '', 17: 1, 18: 3,
+               19: '', 20: 3, 21: '', 22: '', 23: 4, 24: '', 25: 5, 26: 9, 27: 2,
+               28: '', 29: '', 30: '', 31: '', 32: '', 33: '', 34: '', 35: '', 36: 5,
+               37: '', 38: 2, 39: 8, 40: 9, 41: '', 42: '', 43: '', 44: 7, 45: 6,
+               46: 3, 47: '', 48: '', 49: 8, 50: '', 51: '', 52: '', 53: 2, 54: 4,
+               55: '', 56: '', 57: '', 58: '', 59: '', 60: '', 61: 4, 62: '', 63: '',
+               64: 8, 65: '', 66: 7, 67: '', 68: '', 69: '', 70: 2, 71: 6, 72: '',
+               73: 5, 74: 4, 75: 2, 76: '', 77: '', 78: '', 79: '', 80: '', 81: 1
+               }
+
+    def wrapper(self):
+        add_fields(self)
+        for key, value in input_n.items():
+            if value != '':
+                self.fields_dict[key].insert_num(value)
+                self.fields_dict[key].field_get = value
+                self.fields_dict[key].field.configure(bg='lightgrey')
+    return wrapper
+
+
+def testing(start_game):
+    """Выводим получившиеся результаты, для тестирования."""
+    def wrapper(self):
+        start_game(self)
+        print("self.fields_rows: ", self.fields_rows)
+        print("self.fields_cols: ", self.fields_cols)
+        print("self.fields_groups: ", self.fields_groups)
+        print()
+        print("self.selected_rows: ", self.selected_rows)
+        print("self.selected_cols: ", self.selected_cols)
+        print("self.selected_groups: ", self.selected_groups)
+        print()
+        print("self.search_rows: ", self.search_rows)
+        print("self.search_cols: ", self.search_cols)
+        print("self.search_groups: ", self.search_groups)
+        print()
+        for i in range(1, 82):
+            p_1 = self.fields_dict[i].num_field
+            p_2 = self.fields_dict[i].num_row
+            p_3 = self.fields_dict[i].num_col
+            p_4 = self.fields_dict[i].num_group
+            p_5 = self.fields_dict[i].field_get
+            p_6 = self.fields_dict[i].field_insert
+            p_7 = self.fields_dict[i].field_search
+            print("{0}: {1} - {2} - {3} - {4} - {5} - {6}".format(p_1, p_2, p_3, p_4, p_5, p_6, p_7))
+
+    return wrapper
+
+
 class FieldEntry:
     """Это класс полей (тип Entry) для ввода цифр."""
 
@@ -115,6 +167,7 @@ class App:
         fields.pack()
         self.add_fields()
 
+    @test_input
     def add_fields(self):
         """Выводим поля на холсте."""
         self.fields_dict = {}  # Словарь для хранения полей
@@ -244,12 +297,6 @@ class App:
         self.search_rows = self.selected_rows.copy()
         self.search_cols = self.selected_cols.copy()
         self.search_groups = self.selected_groups.copy()
-        # print("self.search_rows: ", self.search_rows)
-        # print("self.search_cols: ", self.search_cols)
-        # print("self.search_groups: ", self.search_groups)
-        # print("self.fields_rows: ", self.fields_rows)
-        # print("self.fields_cols: ", self.fields_cols)
-        # print("self.fields_groups: ", self.fields_groups)
 
         # Перебираем все поля и заполняем исходные данные
         for i in range(1, 82):
@@ -296,6 +343,7 @@ class App:
 
             stop += 1
 
+    @testing
     def start_game(self):
         """Запуск программы по кнопке Старт."""
         self.btn_start["state"] = "disabled"
@@ -310,23 +358,6 @@ class App:
                 self.msg_info.configure(text="Ok")
                 # self.print_fields()
                 self.test_insert()
-
-    def print_fields(self):
-        """Для теста печатем все поля с нужными параметрами."""
-        for i in range(1, 82):
-            p_1 = self.fields_dict[i].num_field
-            p_2 = self.fields_dict[i].num_row
-            p_3 = self.fields_dict[i].num_col
-            p_4 = self.fields_dict[i].num_group
-            p_5 = self.fields_dict[i].field_get
-            p_6 = self.fields_dict[i].field_insert
-            p_7 = self.fields_dict[i].field_search
-            print("{0}: {1} - {2} - {3} - {4} - {5} - {6}".format(p_1, p_2, p_3, p_4, p_5, p_6, p_7))
-
-        print()
-        print("self.search_rows: ", self.search_rows)
-        print("self.search_cols: ", self.search_cols)
-        print("self.search_groups: ", self.search_groups)
 
     def test_insert(self):
         """Для теста печатем все поля с нужными параметрами."""

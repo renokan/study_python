@@ -17,12 +17,7 @@ import copy
 def testing(start_game):
     """Выводим получившиеся результаты, для тестирования."""
     def wrapper(self):
-        # print("Before start")
-        # print("self.fields_rows: ", self.fields_rows)
-        # print("self.fields_cols: ", self.fields_cols)
-        # print("self.fields_groups: ", self.fields_groups)
         start_game(self)
-        # print("Start...")
         # print("self.selected_rows: ", self.selected_rows)
         # print("self.selected_cols: ", self.selected_cols)
         # print("self.selected_groups: ", self.selected_groups)
@@ -34,16 +29,6 @@ def testing(start_game):
         # print("self.fields_rows: ", self.fields_rows)
         # print("self.fields_cols: ", self.fields_cols)
         # print("self.fields_groups: ", self.fields_groups)
-        # print()
-        # for i in range(1, 82):
-        #     p_1 = self.fields_dict[i].num_field
-        #     p_2 = self.fields_dict[i].num_row
-        #     p_3 = self.fields_dict[i].num_col
-        #     p_4 = self.fields_dict[i].num_group
-        #     p_5 = self.fields_dict[i].field_get
-        #     p_6 = self.fields_dict[i].field_insert
-        #     p_7 = self.fields_dict[i].field_search
-        #     print("{0}: {1} - {2} - {3} - {4} - {5} - {6}".format(p_1, p_2, p_3, p_4, p_5, p_6, p_7))
 
     return wrapper
 

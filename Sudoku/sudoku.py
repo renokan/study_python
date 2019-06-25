@@ -307,8 +307,9 @@ class App:
                 self.fields_dict[i].field_insert = 0
 
         step = 0
-        while step < 10:
-
+        while True:
+            # Проверяем кол-во полей во всех группах перед поиском
+            check_start = sum([len(x) for x in self.search_groups.values()])
             # 1 этап: обходим отсортированные словари fields_row(col,group)s
             for (key, value) in sorted(self.fields_rows.items(), key=lambda x: len(x[1])):
                 # 1: [1, 7, 8], 2: [10, 11, 15, 16], 6: [47, 48, 50, 51, 52]...
@@ -381,7 +382,19 @@ class App:
                 else:
                     self.fields_groups.pop(key)
 
-            step += 1
+            # Проверяем кол-во полей во всех группах после поиска
+            check_end = sum([len(x) for x in self.search_groups.values()])
+            # Если нашли все поля, тогда
+            if check_end == 81:
+                self.msg_info.configure(text="Congratulations, the solution is found!")
+                break
+            # Если после поиска ничего не изменилось, тогда
+            elif check_end == check_start:
+                step += 1  # делаем ещё несколько попыток
+                # Если было 3 безуспешные попытки, тогда
+                if step == 3:
+                    self.msg_info.configure(text="Unfortunately, no solution was found!")
+                    break
 
     @testing
     def start_game(self):
@@ -391,13 +404,8 @@ class App:
         if check:
             self.msg_info.configure(text=check)
         else:
-            check = self.search_numbers()
-            if check:
-                self.msg_info.configure(text=check)
-            else:
-                self.msg_info.configure(text="Ok")
-                # Печатаем итоговый результат
-                self.insert_result()
+            self.search_numbers()
+            self.insert_result()
 
     def input_example(self):
         """Вводим значения по умолчанию, для тестирования."""

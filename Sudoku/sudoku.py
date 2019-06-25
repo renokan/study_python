@@ -1,4 +1,14 @@
-"""Game "Sudoku"."""
+"""Sudoku / Решаем задачи судоку.
+
+Уточнение:
+    1. testing() - это декоратор для тестирования
+    2. import copy нужен для глубокого копирования некоторых словарей
+
+Особенности реализации:
+    1. В меню добавлена возможность (Example) сгенерировать набор значений
+    2. Проверка на минимальное кол-во введенных значений
+    3. ...
+"""
 import tkinter as tk
 from tkinter import messagebox as mb
 import copy
@@ -305,6 +315,7 @@ class App:
         stop = 0
         while stop < 10:
 
+            # 1 этап: обходим отсортированные словари fields_row(col,group)s
             for (key, value) in sorted(self.fields_rows.items(), key=lambda x: len(x[1])):
                 # 1: [1, 7, 8], 2: [10, 11, 15, 16], 6: [47, 48, 50, 51, 52]...
                 if len(value) > 0:
@@ -354,7 +365,9 @@ class App:
                 else:
                     self.fields_groups.pop(key)
 
-            # Другой вариант поиска в группах
+            # 2 этап: в отсортированном словаре fields_groups берём значения
+            # полей для каждой группы, берём все field_search и ищем уникальное
+            # значение, далее по нему ищем поле где оно было и его обновляем.
             for (key, value) in sorted(self.fields_groups.items(), key=lambda x: len(x[1])):
                 # 2: [15, 24], 9: [62, 79, 80], 4: [28, 29, 37, 47], 6: [34, 35, 43, 52]...
                 if len(value) > 0:
@@ -373,41 +386,6 @@ class App:
                                     self.upd_dicts(i, s)
                 else:
                     self.fields_groups.pop(key)
-
-
-            # Old variant
-            # for i in range(1, 82):
-            #     if len(self.fields_dict[i].field_search) > 0:
-            #         # Rows
-            #         x = self.fields_dict[i].num_row
-            #         old = self.fields_dict[i].field_search
-            #         new = [i for i in old if i not in self.search_rows[x]]
-            #         if len(new) == 1:
-            #             self.fields_dict[i].field_search = []
-            #             self.fields_dict[i].field_insert = new[0]
-            #             self.upd_dicts(i, new[0])
-            #         else:
-            #             self.fields_dict[i].field_search = new
-            #         # Cols
-            #         x = self.fields_dict[i].num_col
-            #         old = self.fields_dict[i].field_search
-            #         new = [i for i in old if i not in self.search_cols[x]]
-            #         if len(new) == 1:
-            #             self.fields_dict[i].field_search = []
-            #             self.fields_dict[i].field_insert = new[0]
-            #             self.upd_dicts(i, new[0])
-            #         else:
-            #             self.fields_dict[i].field_search = new
-            #         # Groups
-            #         x = self.fields_dict[i].num_group
-            #         old = self.fields_dict[i].field_search
-            #         new = [i for i in old if i not in self.search_groups[x]]
-            #         if len(new) == 1:
-            #             self.fields_dict[i].field_search = []
-            #             self.fields_dict[i].field_insert = new[0]
-            #             self.upd_dicts(i, new[0])
-            #         else:
-            #             self.fields_dict[i].field_search = new
 
             stop += 1
 

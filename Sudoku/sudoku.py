@@ -275,18 +275,19 @@ class App:
         col = self.fields_dict[f_num].num_col
         group = self.fields_dict[f_num].num_group
 
+        # Если значения нет в словаре то добавляем его
         if f_value not in self.search_rows[row]:
             self.search_rows[row].append(f_value)
-        if f_num in self.fields_rows[row]:
-            self.fields_rows[row].remove(f_num)
-
         if f_value not in self.search_cols[col]:
             self.search_cols[col].append(f_value)
-        if f_num in self.fields_cols[col]:
-            self.fields_cols[col].remove(f_num)
-
         if f_value not in self.search_groups[group]:
             self.search_groups[group].append(f_value)
+
+        # Если это поле есть в словаре то удаляем его
+        if f_num in self.fields_rows[row]:
+            self.fields_rows[row].remove(f_num)
+        if f_num in self.fields_cols[col]:
+            self.fields_cols[col].remove(f_num)
         if f_num in self.fields_groups[group]:
             self.fields_groups[group].remove(f_num)
 

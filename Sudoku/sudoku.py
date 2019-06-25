@@ -101,14 +101,12 @@ class App:
         """Что делаем при инициализации класса."""
         self.root = root
         self.app_create()
-        self.app_db()
         self.add_canvas()
         self.add_region_start()
         self.add_region_info()
 
     def app_reset(self):
         """Обнуляем окно программы программы."""
-        self.app_db()
         self.frame_fields.destroy()
         self.add_canvas()
         self.frame_start.destroy()
@@ -116,16 +114,12 @@ class App:
         self.frame_info.destroy()
         self.add_region_info()
 
-    def app_db(self):
-        """Данные программы."""
-        pass
-
     def app_create(self):
         """Конфигурируем окно программы."""
         width = 480
         height = 600
         # Название и фон
-        self.root.title('Game "Sudoku"')
+        self.root.title('Sudoku')
         self.root.configure(background='white')
         # Размеры экрана
         screen_width = self.root.winfo_screenwidth()
@@ -312,8 +306,8 @@ class App:
                 self.fields_dict[i].field_search = []
                 self.fields_dict[i].field_insert = 0
 
-        stop = 0
-        while stop < 10:
+        step = 0
+        while step < 10:
 
             # 1 этап: обходим отсортированные словари fields_row(col,group)s
             for (key, value) in sorted(self.fields_rows.items(), key=lambda x: len(x[1])):
@@ -387,7 +381,7 @@ class App:
                 else:
                     self.fields_groups.pop(key)
 
-            stop += 1
+            step += 1
 
     @testing
     def start_game(self):

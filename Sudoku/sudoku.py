@@ -384,12 +384,13 @@ class App:
 
             # Проверяем кол-во полей во всех группах после поиска
             check_end = sum([len(x) for x in self.search_groups.values()])
-            # Если нашли все поля, тогда
+
             if check_end == 81:
+                # Если нашли все поля, тогда
                 self.msg_info.configure(text="Congratulations, the solution is found!")
                 break
-            # Если после поиска ничего не изменилось, тогда
             elif check_end == check_start:
+                # Если после поиска ничего не изменилось, тогда
                 step += 1  # делаем ещё несколько попыток
                 # Если было 3 безуспешные попытки, тогда
                 if step == 3:

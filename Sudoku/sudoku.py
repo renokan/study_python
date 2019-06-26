@@ -50,10 +50,11 @@ class FieldEntry:
         self.field.bind('<FocusOut>', self.check_input)
         self.field.place(x=f_xy[0], y=f_xy[1], width=48, height=48)
 
-    def insert_num(self, num_insert):
+    def insert_num(self, num_insert=None):
         """Записываем число в нужное поле."""
         self.field.delete(0, "end")
-        self.field.insert(0, num_insert)
+        if num_insert:
+            self.field.insert(0, num_insert)
 
     def check_input(self, event):
         """Проверяем заполнение полей."""
@@ -403,6 +404,13 @@ class App:
         ex_4 = {3: 2, 5: 9, 8: 5, 10: 3, 11: 7, 13: 6, 14: 4, 16: 1, 18: 8, 20: 9, 21: 1, 25: 4, 27: 6, 40: 9, 41: 3, 42: 1, 47: 4, 51: 6, 52: 9, 54: 7, 55: 9, 60: 5, 67: 4, 70: 5, 73: 5, 77: 1, 78: 3, 80: 8}
         examles = {1: ex_1, 2: ex_2, 3: ex_3, 4: ex_4}
 
+        # Чистим все поля от того, что было
+        for i in range(1, 82):
+            self.fields_dict[i].insert_num()
+            self.fields_dict[i].field_get = ''
+            self.fields_dict[i].field.configure(bg='white')
+
+        # Заполняем нужные поля значения из словаря (выбираем random)
         for key, value in examles[random.randint(1, 4)].items():
             if value != '':
                 self.fields_dict[key].insert_num(value)

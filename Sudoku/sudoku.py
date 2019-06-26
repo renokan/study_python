@@ -195,7 +195,7 @@ class App:
         self.frame_info.pack()
         self.msg_info = tk.Label(self.frame_info, bg="white", bd=0)
         self.msg_info.pack()
-        self.msg_info.configure(text="Fill in five or more fields to get started.")
+        self.msg_info.configure(text="Fill in five or more fields to get started.", fg='navy')
 
     def selected_fields(self):
         """Проверяем заполненные поля."""
@@ -209,10 +209,10 @@ class App:
         # Если их 5 или больше, тогда вкл кнопку Старт
         if sum_selected >= 5:
             self.btn_start["state"] = "active"
-            self.msg_info.configure(text="You have filled out {0} fields.".format(sum_selected))
+            self.msg_info.configure(text="You have filled out {0} fields.".format(sum_selected), fg='black')
         else:
             self.btn_start["state"] = "disabled"
-            self.msg_info.configure(text="You have filled out {0} fields, you need at least five.".format(sum_selected))
+            self.msg_info.configure(text="You have filled out {0} fields, you need at least five.".format(sum_selected), fg='black')
 
     def check_selected(self):
         """Проверяем заполненные поля."""
@@ -375,14 +375,14 @@ class App:
 
             if check_end == 81:
                 # Если нашли все поля, тогда
-                self.msg_info.configure(text="Congratulations, the solution is found!")
+                self.msg_info.configure(text="Congratulations, the solution is found!", fg='green')
                 break
             elif check_end == check_start:
                 # Если после поиска ничего не изменилось, тогда
                 step += 1  # делаем ещё несколько попыток
                 # Если было 3 безуспешные попытки, тогда
                 if step == 3:
-                    self.msg_info.configure(text="Unfortunately, no solution was found!")
+                    self.msg_info.configure(text="Unfortunately, no solution was found!", fg='red')
                     break
 
     @testing
@@ -391,7 +391,7 @@ class App:
         self.btn_start["state"] = "disabled"
         check = self.check_selected()
         if check:
-            self.msg_info.configure(text=check)
+            self.msg_info.configure(text=check, fg='red')
         else:
             self.search_numbers()
             self.insert_result()

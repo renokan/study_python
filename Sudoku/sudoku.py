@@ -19,17 +19,32 @@ def testing(start_game):
     """Выводим получившиеся результаты, для тестирования."""
     def wrapper(self):
         start_game(self)
-        # print("self.selected_rows: ", self.selected_rows)
-        # print("self.selected_cols: ", self.selected_cols)
-        # print("self.selected_groups: ", self.selected_groups)
-        # print()
-        # print("self.search_rows: ", self.search_rows)
-        # print("self.search_cols: ", self.search_cols)
-        # print("self.search_groups: ", self.search_groups)
-        # print()
-        # print("self.fields_rows: ", self.fields_rows)
-        # print("self.fields_cols: ", self.fields_cols)
-        # print("self.fields_groups: ", self.fields_groups)
+        # Считаем кол-во найденных полей
+        check = sum([len(x) for x in self.search_groups.values()])
+        # Если не все поля найдены, тогда принтим инфу для анализа
+        if check != 81:
+            print("\nFound {} fields.".format(check))
+
+            print("\nself.fields_rows:")
+            for (key, value) in sorted(self.fields_rows.items(), key=lambda x: len(x[1])):
+                print("row: {0} -> {1}".format(key, value))
+
+            print("\nself.fields_cols:")
+            for (key, value) in sorted(self.fields_cols.items(), key=lambda x: len(x[1])):
+                print("col: {0} -> {1}".format(key, value))
+
+            print("\nself.fields_groups:")
+            for (key, value) in sorted(self.fields_groups.items(), key=lambda x: len(x[1])):
+                print("group: {0} -> {1}".format(key, value))
+
+            print("\nList:  num -> row - col - group -> field_search")
+            for i in range(1, 82):
+                if len(self.fields_dict[i].field_search) > 0:
+                    f_row = self.fields_dict[i].num_row
+                    f_col = self.fields_dict[i].num_col
+                    f_group = self.fields_dict[i].num_group
+                    f_search = self.fields_dict[i].field_search
+                    print("field: {0} -> {1} - {2} - {3} -> {4}".format(i, f_row, f_col, f_group, f_search))
 
     return wrapper
 

@@ -390,15 +390,13 @@ class App:
 
             if check_end == 81:
                 # Если нашли все поля, тогда
-                self.msg_info.configure(text="Congratulations, the solution is found!", fg='green')
                 break
             elif check_end == check_start:
                 # Если после поиска ничего не изменилось, тогда
                 step += 1  # делаем ещё несколько попыток
                 # Если было 3 безуспешные попытки, тогда
                 if step == 3:
-                    self.msg_info.configure(text="Unfortunately, no solution was found!", fg='red')
-                    break
+                    return "Unfortunately, no solution was found!"
 
     @testing
     def start_game(self):
@@ -408,7 +406,12 @@ class App:
         if check:
             self.msg_info.configure(text=check, fg='red')
         else:
-            self.search_numbers()
+            check = self.search_numbers()
+            if check:
+                self.msg_info.configure(text=check, fg='red')
+            else:
+                self.msg_info.configure(text="Congratulations, the solution is found!", fg='green')
+            # В не зависимости сколько полей нашли, нужно показать их пользователю
             self.insert_result()
 
     def input_example(self):

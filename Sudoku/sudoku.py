@@ -14,15 +14,15 @@ from tkinter import messagebox as mb
 import random
 
 
-def testing(search_numbers):
+def testing(insert_result):
     """Выводим получившиеся результаты, для тестирования."""
     def wrapper(self):
-        search_numbers(self)
+        insert_result(self)
         # Считаем кол-во найденных полей
-        check = sum([len(x) for x in self.search_groups.values()])
+        found_fields = sum([len(x) for x in self.search_groups.values()])
         # Если не все поля найдены, тогда принтим инфу для анализа
-        if check != 81:
-            print("\nFound {} fields.".format(check))
+        if found_fields != 81:
+            print("\nFound {} fields.".format(found_fields))
 
             print("\nself.fields_rows:")
             for (key, value) in sorted(self.fields_rows.items(), key=lambda x: len(x[1])):
@@ -283,7 +283,6 @@ class App:
         self.fields_cols[col].discard(f_num)
         self.fields_groups[group].discard(f_num)
 
-    @testing
     def search_numbers(self):
         """Ищем номера."""
         self.search_rows = {key: set(value) for key, value in self.selected_rows.items()}
@@ -427,6 +426,7 @@ class App:
         # Проверяем заполненные поля
         self.selected_fields()
 
+    @testing
     def insert_result(self):
         """Вводим найденные значения."""
         for i in range(1, 82):

@@ -12,13 +12,12 @@
 import tkinter as tk
 from tkinter import messagebox as mb
 import random
-import copy
 
 
-def testing(start_game):
+def testing(search_numbers):
     """Выводим получившиеся результаты, для тестирования."""
     def wrapper(self):
-        start_game(self)
+        search_numbers(self)
         # Считаем кол-во найденных полей
         check = sum([len(x) for x in self.search_groups.values()])
         # Если не все поля найдены, тогда принтим инфу для анализа
@@ -232,9 +231,9 @@ class App:
     def check_selected(self):
         """Проверяем заполненные поля."""
         # Формируем словари полей для строк, столбцов и групп. Для поиска надо.
-        self.fields_rows = {k: [i for i in range(1, 82) if self.fields_dict[i].num_row == k] for k in range(1, 10)}
-        self.fields_cols = {k: [i for i in range(1, 82) if self.fields_dict[i].num_col == k] for k in range(1, 10)}
-        self.fields_groups = {k: [i for i in range(1, 82) if self.fields_dict[i].num_group == k] for k in range(1, 10)}
+        self.fields_rows = {k: set([i for i in range(1, 82) if self.fields_dict[i].num_row == k]) for k in range(1, 10)}
+        self.fields_cols = {k: set([i for i in range(1, 82) if self.fields_dict[i].num_col == k]) for k in range(1, 10)}
+        self.fields_groups = {k: set([i for i in range(1, 82) if self.fields_dict[i].num_group == k]) for k in range(1, 10)}
         # Формируем словари ...
         self.selected_rows = {k: [] for k in range(1, 10)}
         self.selected_cols = {k: [] for k in range(1, 10)}
@@ -249,26 +248,23 @@ class App:
             self.selected_cols[num_col].append(field)
             self.selected_groups[num_group].append(field)
             # Формируем (удаляем номера полей) словарь
-            if key in self.fields_rows[num_row]:
-                self.fields_rows[num_row].remove(key)
-            if key in self.fields_cols[num_col]:
-                self.fields_cols[num_col].remove(key)
-            if key in self.fields_groups[num_group]:
-                self.fields_groups[num_group].remove(key)
+            self.fields_rows[num_row].discard(key)
+            self.fields_cols[num_col].discard(key)
+            self.fields_groups[num_group].discard(key)
         # Проверяем чтобы в строке не было повторений
-        for key, list in self.selected_rows.items():
+        for key, value in self.selected_rows.items():
             for x in range(1, 10):
-                if list.count(x) > 1:
+                if value.count(x) > 1:
                     return "You have entered several '{}' values ​​in the row.".format(x)
         # Проверяем чтобы в столбце не было повторений
-        for key, list in self.selected_cols.items():
+        for key, value in self.selected_cols.items():
             for x in range(1, 10):
-                if list.count(x) > 1:
+                if value.count(x) > 1:
                     return "You have entered several '{}' values ​​in the column.".format(x)
         # Проверяем чтобы в группе не было повторений
-        for key, list in self.selected_groups.items():
+        for key, value in self.selected_groups.items():
             for x in range(1, 10):
-                if list.count(x) > 1:
+                if value.count(x) > 1:
                     return "You have entered several '{}' values ​​in the group.".format(x)
 
     def upd_dicts(self, f_num, f_value):
@@ -278,35 +274,30 @@ class App:
         group = self.fields_dict[f_num].num_group
 
         # Если значения нет в словаре то добавляем его
-        if f_value not in self.search_rows[row]:
-            self.search_rows[row].append(f_value)
-        if f_value not in self.search_cols[col]:
-            self.search_cols[col].append(f_value)
-        if f_value not in self.search_groups[group]:
-            self.search_groups[group].append(f_value)
+        self.search_rows[row].add(f_value)
+        self.search_cols[col].add(f_value)
+        self.search_groups[group].add(f_value)
 
         # Если это поле есть в словаре то удаляем его
-        if f_num in self.fields_rows[row]:
-            self.fields_rows[row].remove(f_num)
-        if f_num in self.fields_cols[col]:
-            self.fields_cols[col].remove(f_num)
-        if f_num in self.fields_groups[group]:
-            self.fields_groups[group].remove(f_num)
+        self.fields_rows[row].discard(f_num)
+        self.fields_cols[col].discard(f_num)
+        self.fields_groups[group].discard(f_num)
 
+    @testing
     def search_numbers(self):
         """Ищем номера."""
-        self.search_rows = copy.deepcopy(self.selected_rows)
-        self.search_cols = copy.deepcopy(self.selected_cols)
-        self.search_groups = copy.deepcopy(self.selected_groups)
+        self.search_rows = {key: set(value) for key, value in self.selected_rows.items()}
+        self.search_cols = {key: set(value) for key, value in self.selected_cols.items()}
+        self.search_groups = {key: set(value) for key, value in self.selected_groups.items()}
         # selected_rows = {1: [5, 9, 3, 1, 7, 8], 2: [4, 2, 9, 1, 3], 3: [3, 4, 5, 9, 2], 4: [5], 5:
         # selected_cols =  {1: [3, 8, 5], 2: [5, 3, 2, 4], 3: [9, 4, 8, 7, 2], 4: [3, 2, 9, 8]
         # selected_groups = {1: [5, 9, 4, 3], 2: [3, 1, 7, 2, 9, 4], 3: [8, 1, 3, 5, 9, 2], 4: [2, 8, 3]
 
         # Перебираем все поля и заполняем исходные данные
         for i in range(1, 82):
-            self.fields_dict[i].field_search = [x for x in range(1, 10)]
+            self.fields_dict[i].field_search = set([x for x in range(1, 10)])
             if self.fields_dict[i].field_get != '':
-                self.fields_dict[i].field_search = []
+                self.fields_dict[i].field_search.clear()
                 self.fields_dict[i].field_insert = 0
 
         step = 0
@@ -317,49 +308,40 @@ class App:
             for (key, value) in sorted(self.fields_rows.items(), key=lambda x: len(x[1])):
                 # 1: [1, 7, 8], 2: [10, 11, 15, 16], 6: [47, 48, 50, 51, 52]...
                 if len(value) > 0:
-                    for i in value:
+                    for i in value.copy():
                         if len(self.fields_dict[i].field_search) > 0:
                             x = self.fields_dict[i].num_row
-                            old = self.fields_dict[i].field_search
-                            new = [i for i in old if i not in self.search_rows[x]]
-                            if len(new) == 1:
-                                self.fields_dict[i].field_search = []
-                                self.fields_dict[i].field_insert = new[0]
-                                self.upd_dicts(i, new[0])
-                            else:
-                                self.fields_dict[i].field_search = new
+                            self.fields_dict[i].field_search = self.fields_dict[i].field_search - self.search_rows[x]
+                            if len(self.fields_dict[i].field_search) == 1:
+                                result = self.fields_dict[i].field_search.pop()
+                                self.fields_dict[i].field_insert = result
+                                self.upd_dicts(i, result)
                 else:
                     self.fields_rows.pop(key)
             for (key, value) in sorted(self.fields_cols.items(), key=lambda x: len(x[1])):
                 # 9: [63, 72], 3: [21, 30, 48, 57], 2: [11, 29, 47, 56, 65]...
                 if len(value) > 0:
-                    for i in value:
+                    for i in value.copy():
                         if len(self.fields_dict[i].field_search) > 0:
                             x = self.fields_dict[i].num_col
-                            old = self.fields_dict[i].field_search
-                            new = [i for i in old if i not in self.search_cols[x]]
-                            if len(new) == 1:
-                                self.fields_dict[i].field_search = []
-                                self.fields_dict[i].field_insert = new[0]
-                                self.upd_dicts(i, new[0])
-                            else:
-                                self.fields_dict[i].field_search = new
+                            self.fields_dict[i].field_search = self.fields_dict[i].field_search - self.search_cols[x]
+                            if len(self.fields_dict[i].field_search) == 1:
+                                result = self.fields_dict[i].field_search.pop()
+                                self.fields_dict[i].field_insert = result
+                                self.upd_dicts(i, result)
                 else:
                     self.fields_cols.pop(key)
             for (key, value) in sorted(self.fields_groups.items(), key=lambda x: len(x[1])):
                 # 3: [16], 2: [15, 22, 24], 1: [1, 10, 11, 19, 21]...
                 if len(value) > 0:
-                    for i in value:
+                    for i in value.copy():
                         if len(self.fields_dict[i].field_search) > 0:
                             x = self.fields_dict[i].num_group
-                            old = self.fields_dict[i].field_search
-                            new = [i for i in old if i not in self.search_groups[x]]
-                            if len(new) == 1:
-                                self.fields_dict[i].field_search = []
-                                self.fields_dict[i].field_insert = new[0]
-                                self.upd_dicts(i, new[0])
-                            else:
-                                self.fields_dict[i].field_search = new
+                            self.fields_dict[i].field_search = self.fields_dict[i].field_search - self.search_groups[x]
+                            if len(self.fields_dict[i].field_search) == 1:
+                                result = self.fields_dict[i].field_search.pop()
+                                self.fields_dict[i].field_insert = result
+                                self.upd_dicts(i, result)
                 else:
                     self.fields_groups.pop(key)
 
@@ -377,9 +359,9 @@ class App:
                     all = [i for i in all if i not in self.search_groups[key]]
                     for s in all:
                         if all.count(s) == 1:
-                            for i in value:
+                            for i in value.copy():
                                 if s in self.fields_dict[i].field_search:
-                                    self.fields_dict[i].field_search = []
+                                    self.fields_dict[i].field_search.clear()
                                     self.fields_dict[i].field_insert = s
                                     self.upd_dicts(i, s)
                 else:
@@ -398,7 +380,6 @@ class App:
                 if step == 3:
                     return "Unfortunately, no solution was found!"
 
-    @testing
     def start_game(self):
         """Запуск программы по кнопке Старт."""
         self.btn_start["state"] = "disabled"

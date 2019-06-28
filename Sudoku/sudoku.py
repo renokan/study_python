@@ -415,7 +415,6 @@ class App:
             self.fields_dict[i].field_insert = ''
             self.fields_dict[i].field.configure(bg='white')
 
-
         # Заполняем нужные поля значения из словаря (выбираем random)
         for key, value in examles[random.randint(1, 4)].items():
             if value != '':

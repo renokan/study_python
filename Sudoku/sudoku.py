@@ -349,21 +349,27 @@ class App:
             # полей для каждой группы, берём все field_search и ищем уникальное
             # значение, далее по нему ищем поле где оно было и его обновляем.
             for (key, value) in sorted(self.fields_groups.items(), key=lambda x: len(x[1])):
-                # 2: [15, 24], 9: [62, 79, 80], 4: [28, 29, 37, 47], 6: [34, 35, 43, 52]...
+                # 2: {15, 24}, 9: {62, 79, 80}, 4: ...
                 if len(value) > 0:
-                    all = []
+                    temp = []
                     for i in value:
                         if len(self.fields_dict[i].field_search) > 0:
                             for x in self.fields_dict[i].field_search:
-                                all.append(x)
-                    all = [i for i in all if i not in self.search_groups[key]]
-                    for s in all:
-                        if all.count(s) == 1:
+                                # self.fields_dict[15] -> field_search: 8, 5
+                                # self.fields_dict[24] -> field_search: 8, 6
+                                temp.append(x)
+                    # Проверяем каждую цифру в словаре найденных для этой группы
+                    # temp = [8, 5, 8, 6] / search_group = {1, 2, 3, 4, 6, 7, 9}
+                    check = [i for i in temp if i not in self.search_groups[key]]
+                    # check = [8, 5, 8]
+                    for x in check:
+                        if check.count(x) == 1:
+                            # 5
                             for i in value.copy():
-                                if s in self.fields_dict[i].field_search:
+                                if x in self.fields_dict[i].field_search:
                                     self.fields_dict[i].field_search.clear()
-                                    self.fields_dict[i].field_insert = s
-                                    self.upd_dicts(i, s)
+                                    self.fields_dict[i].field_insert = x
+                                    self.upd_dicts(i, x)
                 else:
                     self.fields_groups.pop(key)
 

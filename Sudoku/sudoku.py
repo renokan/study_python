@@ -38,7 +38,7 @@ def testing(insert_result):
 
             print("\nList:  num -> row - col - group -> field_search")
             for i in range(1, 82):
-                if len(self.fields_dict[i].field_search) > 0:
+                if self.fields_dict[i].field_search:
                     f_row = self.fields_dict[i].num_row
                     f_col = self.fields_dict[i].num_col
                     f_group = self.fields_dict[i].num_group
@@ -308,7 +308,7 @@ class App:
                 # 1: [1, 7, 8], 2: [10, 11, 15, 16], 6: [47, 48, 50, 51, 52]...
                 if len(value) > 0:
                     for i in value.copy():
-                        if len(self.fields_dict[i].field_search) > 0:
+                        if self.fields_dict[i].field_search:
                             x = self.fields_dict[i].num_row
                             self.fields_dict[i].field_search = self.fields_dict[i].field_search - self.search_rows[x]
                             if len(self.fields_dict[i].field_search) == 1:
@@ -321,7 +321,7 @@ class App:
                 # 9: [63, 72], 3: [21, 30, 48, 57], 2: [11, 29, 47, 56, 65]...
                 if len(value) > 0:
                     for i in value.copy():
-                        if len(self.fields_dict[i].field_search) > 0:
+                        if self.fields_dict[i].field_search:
                             x = self.fields_dict[i].num_col
                             self.fields_dict[i].field_search = self.fields_dict[i].field_search - self.search_cols[x]
                             if len(self.fields_dict[i].field_search) == 1:
@@ -334,7 +334,7 @@ class App:
                 # 3: [16], 2: [15, 22, 24], 1: [1, 10, 11, 19, 21]...
                 if len(value) > 0:
                     for i in value.copy():
-                        if len(self.fields_dict[i].field_search) > 0:
+                        if self.fields_dict[i].field_search:
                             x = self.fields_dict[i].num_group
                             self.fields_dict[i].field_search = self.fields_dict[i].field_search - self.search_groups[x]
                             if len(self.fields_dict[i].field_search) == 1:
@@ -352,7 +352,7 @@ class App:
                 if len(value) > 0:
                     temp = []
                     for i in value:
-                        if len(self.fields_dict[i].field_search) > 0:
+                        if self.fields_dict[i].field_search:
                             for x in self.fields_dict[i].field_search:
                                 # self.fields_dict[15] -> field_search: 8, 5
                                 # self.fields_dict[24] -> field_search: 8, 6

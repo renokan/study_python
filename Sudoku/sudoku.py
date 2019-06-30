@@ -295,7 +295,7 @@ class App:
         # Перебираем все поля и заполняем исходные данные
         for i in range(1, 82):
             self.fields_dict[i].field_search = set([x for x in range(1, 10)])
-            if self.fields_dict[i].field_get != '':
+            if self.fields_dict[i].field_get:
                 self.fields_dict[i].field_search.clear()
                 self.fields_dict[i].field_insert = 0
 

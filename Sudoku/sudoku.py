@@ -11,7 +11,9 @@
 """
 import tkinter as tk
 from tkinter import messagebox as mb
+from tkinter import filedialog as ld
 import random
+import json
 
 
 def testing(insert_result):
@@ -105,6 +107,7 @@ class App:
         self.add_canvas()
         self.add_region_start()
         self.add_region_info()
+        self.dict_selected = {}
 
     def app_reset(self):
         """Обнуляем окно программы программы."""
@@ -114,6 +117,7 @@ class App:
         self.add_region_start()
         self.frame_info.destroy()
         self.add_region_info()
+        self.dict_selected = {}
 
     def app_create(self):
         """Конфигурируем окно программы."""
@@ -134,8 +138,10 @@ class App:
         top_menu = tk.Menu(self.root)
         self.root.config(menu=top_menu)
         top_menu.add_command(label="About", command=game_info)
-        top_menu.add_command(label="Reset", command=game_reset)
         top_menu.add_command(label="Example", command=self.input_example)
+        top_menu.add_command(label="Reset", command=game_reset)
+        top_menu.add_command(label="Save", command=self.save_selected)
+        top_menu.add_command(label="Load", command=self.load_selected)
         top_menu.add_command(label="Exit", command=game_exit)
 
     def add_canvas(self):
@@ -213,20 +219,20 @@ class App:
 
     def selected_fields(self):
         """Проверяем заполненные поля."""
-        sum_selected = 0
         self.dict_selected = {}
+        selected = 0
         # Перебираем все поля
         for key, field in self.fields_dict.items():
             if field.field_get in range(1, 10):
                 self.dict_selected[key] = field.field_get
-                sum_selected += 1
+                selected += 1
         # Если их 5 или больше, тогда вкл кнопку Старт
-        if sum_selected >= 5:
+        if selected >= 5:
             self.btn_start["state"] = "active"
-            self.msg_info.configure(text="You have filled out {0} fields.".format(sum_selected), fg='black')
+            self.msg_info.configure(text="You have filled out {0} fields.".format(selected), fg='black')
         else:
             self.btn_start["state"] = "disabled"
-            self.msg_info.configure(text="You have filled out {0} fields, you need at least five.".format(sum_selected), fg='black')
+            self.msg_info.configure(text="You have filled out {0} fields, you need at least five.".format(selected), fg='black')
 
     def check_selected(self):
         """Проверяем заполненные поля."""
@@ -266,6 +272,52 @@ class App:
             for x in range(1, 10):
                 if value.count(x) > 1:
                     return "You have entered several '{}' values ​​in the group.".format(x)
+
+    def save_selected(self):
+        """Сохраняем выбранные пользователем значения/поля."""
+        if self.dict_selected:
+            selected = "".join([str(x) for x in self.dict_selected.values()])
+            if len(selected) > 6:
+                list_num = selected[:3] + selected[len(selected) - 3:]
+            else:
+                list_num = selected
+            file = 'sudoku-' + str(len(selected)) + '_' + list_num + '.txt'
+            text = "\nThe selected fields ({0})\nwill be saved to the file '{1}'?\n".format(len(selected), file)
+            answer = mb.askyesno(title="Save selected", message=text)
+            if answer is True:
+                json.dump(self.dict_selected, open(file, 'w'))
+        else:
+            text = "\nNothing selected, no data to save.\n"
+            mb.showerror(title="Error save", message=text)
+
+    def load_selected(self):
+        """Загружаем ранее сохраненные значения/поля."""
+        filename = ld.askopenfilename(filetypes=(("txt files", "*.txt"), ("all files", "*.*")), title="Choose a file")
+        if filename:
+            try:
+                selected = json.load(open(filename))
+                selected = {int(key): value for key, value in selected.items()}
+            except Exception:
+                text = "\nError loading file.\n"
+                mb.showerror(title="Error load", message=text)
+            else:
+                # Чистим все поля от того, что было
+                for i in range(1, 82):
+                    self.fields_dict[i].insert_num()
+                    self.fields_dict[i].field_get = ''
+                    self.fields_dict[i].field_insert = ''
+                    self.fields_dict[i].field.configure(bg='white')
+
+                # Вносим данные из загруженного файла
+                for key, value in selected.items():
+                    if key in range(1, 82):
+                        if selected[key] in range(1, 10):
+                            self.fields_dict[key].insert_num(value)
+                            self.fields_dict[key].field_get = value
+                            self.fields_dict[key].field.configure(bg='lightgrey')
+
+                # Проверяем заполненные поля
+                self.selected_fields()
 
     def upd_dicts(self, f_num, f_value):
         """Обновляем словари, исходные данные берём из найденного значения."""

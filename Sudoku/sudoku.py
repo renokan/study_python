@@ -14,6 +14,7 @@ from tkinter import messagebox as mb
 from tkinter import filedialog as ld
 import random
 import json
+from datetime import datetime
 
 
 def testing(insert_result):
@@ -276,26 +277,36 @@ class App:
     def save_selected(self):
         """Сохраняем выбранные пользователем значения/поля."""
         if self.dict_selected:
-            selected = "".join([str(x) for x in self.dict_selected.values()])
+            selected = ''
+            # Сохраняем в строку введенные пользователем значения
+            for key, value in sorted(self.dict_selected.items()):
+                selected += str(value)
             if len(selected) > 6:
+                # В название файла берём первые и последние три значения
                 list_num = selected[:3] + selected[len(selected) - 3:]
             else:
                 list_num = selected
-            file = 'sudoku-' + str(len(selected)) + '_' + list_num + '.txt'
+            file = 'sudoku-' + str(len(selected)) + '_' + list_num + '.json'
             text = "\nThe selected fields ({0})\nwill be saved to the file '{1}'?\n".format(len(selected), file)
             answer = mb.askyesno(title="Save selected", message=text)
             if answer is True:
-                json.dump(self.dict_selected, open(file, 'w'))
+                dtime = datetime.today().strftime('%d-%m-%Y %H:%M')
+                save_dict = {'saved': dtime,
+                             'selected': self.dict_selected,
+                             'total': len(selected)
+                             }
+                json.dump(save_dict, open(file, 'w'), sort_keys=True, indent=4)
         else:
             text = "\nNothing selected, no data to save.\n"
             mb.showerror(title="Error save", message=text)
 
     def load_selected(self):
         """Загружаем ранее сохраненные значения/поля."""
-        filename = ld.askopenfilename(filetypes=(("txt files", "*.txt"), ("all files", "*.*")), title="Choose a file")
+        filename = ld.askopenfilename(filetypes=(("json files", "*.json"), ("all files", "*.*")), title="Choose a file")
         if filename:
             try:
-                selected = json.load(open(filename))
+                load_data = json.load(open(filename))
+                selected = load_data.get('selected')
                 selected = {int(key): value for key, value in selected.items()}
             except Exception:
                 text = "\nError loading file.\n"

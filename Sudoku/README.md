@@ -1,5 +1,10 @@
 ## Sudoku - Решаем задачи судоку
 
-Список файлов:
-+ **sudoku.py** - *сама программа с графическим интерфейсом*
-+ **example_draw_matrix.py** - *это отдельная рисовалка матриц на холсте*
+### sudoku.py
+
+![Screenshot](screenshot-sudoku.png)
+
+### example_draw_matrix.py
+*это отдельная рисовалка матриц на холсте*
+
+![Screenshot](screenshot-draw_matrix.png)

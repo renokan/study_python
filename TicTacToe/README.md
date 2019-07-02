@@ -1,5 +1,10 @@
 ## Tic-tac-toe - Игра "Крестики-нолики"
 
-Список файлов:
-+ **game_gui.py** - *с графическим интерфейсом*
-+ **game_terminal.py** - *без графического интерфейса*
+### game_gui.py
+
+![Screenshot](screenshot-game_gui.png)
+
+### game_terminal.py
+*без графического интерфейса*
+
+![Screenshot](screenshot-game_terminal.png)

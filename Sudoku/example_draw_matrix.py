@@ -262,7 +262,7 @@ def window_center(toplevel):
     if height > screen_height:
         y = 0
     else:
-        y = (screen_height / 2) - (height / 1.4)
+        y = (screen_height / 2) - (height / 2)
     toplevel.geometry('+%d+%d' % (x, y))
 
 

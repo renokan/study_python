@@ -139,8 +139,7 @@ class App:
         """Создаем новый файл."""
         name = self.file_name.get()
         if name:
-            dir = os.getcwd()
-            path_to_file = dir + "/" + name
+            path_to_file = os.getcwd() + os.sep + name
             try:
                 with open(path_to_file, 'x') as f:
                     data = self.file_data.get(1.0, "end")
@@ -169,6 +168,10 @@ class App:
         """Загружаем файл."""
         path_to_file = ld.askopenfilename(initialdir=os.getcwd(), title="Choose a file", filetypes=(("TXT files", "*.txt"), ("all files", "*.*")))
         if path_to_file:
+            # Через askopenfilename путь к файлу приходит с разделителем "/"
+            if os.sep == '\\':
+                temp = path_to_file.split("/")
+                path_to_file = "\\".join(temp)
             try:
                 with open(path_to_file) as f:
                     temp = f.read()
@@ -181,7 +184,7 @@ class App:
                 self.file_data.delete(1.0, "end")
                 self.file_data.insert(1.0, temp)
                 self.file_name.delete(0, "end")
-                self.file_name.insert(0, path_to_file.split("/")[-1])
+                self.file_name.insert(0, path_to_file.split(os.sep)[-1])
                 # Обновляем информацию о файле
                 self.info_file(path_to_file)
         # window_center(root)
@@ -213,7 +216,7 @@ class App:
 
     def del_file(self):
         """Удаляем файл."""
-        name = self.cur_file.split("/")[-1]
+        name = self.cur_file.split(os.sep)[-1]
         text = "Delete file {0}?".format(name)
         answer = mb.askyesno(title="Delete", message=text)
         if answer is True:
@@ -233,7 +236,7 @@ class App:
 
     def save_file(self):
         """Сохраняем содержимое файла."""
-        name = self.cur_file.split("/")[-1]
+        name = self.cur_file.split(os.sep)[-1]
         text = "Save file {0}?".format(name)
         answer = mb.askyesno(title="Save", message=text)
         if answer is True:

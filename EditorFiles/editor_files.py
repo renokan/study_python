@@ -181,7 +181,7 @@ class App:
                 self.file_data.delete(1.0, "end")
                 self.file_data.insert(1.0, temp)
                 self.file_name.delete(0, "end")
-                self.file_name.insert(0, path_to_file.split(os.sep)[-1])
+                self.file_name.insert(0, path_to_file.split("/")[-1])
                 # Обновляем информацию о файле
                 self.info_file(path_to_file)
         # window_center(root)
@@ -213,7 +213,7 @@ class App:
 
     def del_file(self):
         """Удаляем файл."""
-        name = self.cur_file.split(os.sep)[-1]
+        name = self.cur_file.split("/")[-1]
         text = "Delete file {0}?".format(name)
         answer = mb.askyesno(title="Delete", message=text)
         if answer is True:
@@ -233,7 +233,7 @@ class App:
 
     def save_file(self):
         """Сохраняем содержимое файла."""
-        name = self.cur_file.split(os.sep)[-1]
+        name = self.cur_file.split("/")[-1]
         text = "Save file {0}?".format(name)
         answer = mb.askyesno(title="Save", message=text)
         if answer is True:

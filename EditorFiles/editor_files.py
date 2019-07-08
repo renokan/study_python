@@ -29,6 +29,8 @@ class App:
     def __init__(self, root):
         """Что делаем при инициализации класса."""
         self.root = root
+        self.sizes = ((60, 12), (80, 14), (100, 16), (120, 18), (140, 20), (160, 22), (180, 24))
+        self.app_size = self.sizes[1]
         self.app_create()
         self.reg_directory()
         self.reg_activate()
@@ -36,32 +38,42 @@ class App:
         self.reg_info()
         self.reg_action()
 
+    def size_increase(self):
+        """Увеличиваем окно программы."""
+        if self.app_size != self.sizes[-1]:
+            x = self.sizes.index(self.app_size)
+            x += 1
+            self.app_size = self.sizes[x]
+            self.file_data.config(width=self.app_size[0], height=self.app_size[1])
+            window_center(root)
+
+    def size_reduce(self):
+        """Уменьшаем окно программы."""
+        if self.app_size != self.sizes[0]:
+            x = self.sizes.index(self.app_size)
+            x -= 1
+            self.app_size = self.sizes[x]
+            self.file_data.config(width=self.app_size[0], height=self.app_size[1])
+            window_center(root)
+
     def app_create(self):
         """Конфигурируем окно программы."""
-        # width = 480
-        # height = 600
         # Название и фон
         self.root.title('Editor files')
         self.root.configure(background='white')
-        self.root.resizable(True, False)
-        # Размеры экрана
-        # screen_width = self.root.winfo_screenwidth()
-        # screen_height = self.root.winfo_screenheight()
-        # # Центрируем положение
-        # x = (screen_width / 2) - (width / 2)
-        # y = (screen_height / 2) - (height / 1.4)
-        # self.root.geometry('%dx%d+%d+%d' % (width, height, x, y))
-        # self.root.resizable(True, True)
+        self.root.resizable(False, False)
         # Меню
         top_menu = tk.Menu(self.root)
         self.root.config(menu=top_menu)
+        top_menu.add_command(label="Size+", command=self.size_increase)
+        top_menu.add_command(label="Size-", command=self.size_reduce)
         top_menu.add_command(label="About", command=app_info)
         top_menu.add_command(label="Exit", command=app_exit)
 
     def reg_directory(self):
         """Выводим блок - текущая директория."""
         cur_dir = os.getcwd()
-        self.reg_dir = tk.Frame(self.root, width=464, height=70, bg="white")
+        self.reg_dir = tk.Frame(self.root, height=70, bg="white")
         self.reg_dir.pack(fill="x")
 
         self.dir_label = tk.Label(self.reg_dir, text="Current directory:", bg="white", bd=0)
@@ -94,11 +106,11 @@ class App:
         """Выводим блок - содержимое файла - программы."""
         self.reg_file = tk.Frame(self.root, bg="white", bd=5)
         self.reg_file.pack(fill="x")
-        self.file_data = tk.Text(self.reg_file, height=12, bg="gray80", fg='black', wrap="word")
-        self.file_data.pack(fill="x")
-        # scroll = tk.Scrollbar(self.reg_file, command=self.file_data.yview)
-        # scroll.pack(side="left", fill="y")
-        # self.file_data.config(yscrollcommand=scroll.set)
+        self.file_data = tk.Text(self.reg_file, width=self.app_size[0], height=self.app_size[1], bg="gray80", fg='black', wrap="word")
+        self.file_data.pack(side="left", fill="x")
+        scroll = tk.Scrollbar(self.reg_file, command=self.file_data.yview)
+        scroll.pack(side="left", fill="both")
+        self.file_data.config(yscrollcommand=scroll.set)
 
     def reg_info(self):
         """Выводим блок - информация о файле."""

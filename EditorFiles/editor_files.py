@@ -13,7 +13,7 @@ EditorFiles / Редактор файлов.
 
 Также становятся доступны кнопки Сохранить и Удалить текущий файл.
 
-При каждом действии, связанным с модификацией файла, справшивает у пользователя.
+При каждом действии, связанным с модификацией файла, спрашиваем у пользователя.
 """
 
 import tkinter as tk
@@ -147,16 +147,21 @@ class App:
                     if data:
                         f.write(data)
             except FileExistsError:
+                # Уведомление о неудачном действии с файлом
                 text = "\nThis file already exists.\n"
                 mb.showerror(title="Error", message=text)
             except FileNotFoundError:
+                # Уведомление о неудачном действии с файлом
                 text = "\nNo such file or directory.\n"
                 mb.showerror(title="Error", message=text)
             else:
+                # Уведомление об успешном действии с файлом
                 text = "\nFile {0} successfully created.\n".format(name)
                 mb.showinfo(title="New file", message=text)
+                # Обновляем информацию о файле
                 self.info_file(path_to_file)
         else:
+            # Уведомление о неудачном действии
             text = "\nMissing file name.\n"
             mb.showerror(title="Error", message=text)
 
@@ -168,13 +173,16 @@ class App:
                 with open(path_to_file) as f:
                     temp = f.read()
             except Exception:
+                # Уведомление о неудачном действии с файлом
                 text = "\nError loading file.\n"
                 mb.showerror(title="Error load", message=text)
             else:
+                # Записываем данные в поля (tk.Entry)
                 self.file_data.delete(1.0, "end")
                 self.file_data.insert(1.0, temp)
                 self.file_name.delete(0, "end")
                 self.file_name.insert(0, path_to_file.split(os.sep)[-1])
+                # Обновляем информацию о файле
                 self.info_file(path_to_file)
         # window_center(root)
 
@@ -194,13 +202,13 @@ class App:
             file_size = round(file_size / 1024)  # KB
             size_num = "KB"
         file_size = "{0} {1}".format(file_size, size_num)
-
+        # Обновляем информацию - время и размер файла
         self.time_info.config(text=file_time)
         self.size_info.config(text=file_size)
-
+        # Активируем кнопки для работы с файлом
         self.save_btn.config(state="active")
         self.del_btn.config(state="active")
-
+        # Записываем данные по текущему файлу в переменную, для работы с файлом
         self.cur_file = path_to_file
 
     def del_file(self):
@@ -211,15 +219,15 @@ class App:
         if answer is True:
             os.remove(self.cur_file)
             self.cur_file = ""
-
+            # Уведомление об успешном действии с файлом
             text = "File {0} has been deleted.".format(name)
             mb.showinfo(title="Info", message=text)
-
+            # Чистим поля (tk.Entry) от данных
             self.file_name.delete(0, "end")
             self.file_data.delete(1.0, "end")
             self.time_info.config(text="")
             self.size_info.config(text="")
-
+            # Отключаем кнопки
             self.save_btn.config(state="disabled")
             self.del_btn.config(state="disabled")
 
@@ -237,8 +245,10 @@ class App:
                 text = "\nNo such file or directory.\n"
                 mb.showerror(title="Error", message=text)
             else:
+                # Уведомление об успешном действии с файлом
                 text = "File {0} has been saved.".format(name)
                 mb.showinfo(title="Info", message=text)
+                # Обновляем информацию о файле
                 self.info_file(self.cur_file)
 
 

@@ -1,5 +1,3 @@
 ## EditorFiles - Редактор файлов
 
-![Screenshot](screenshot-editor_files)
-
-
+![Screenshot](screenshot-editor_files.png)

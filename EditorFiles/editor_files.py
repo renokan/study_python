@@ -189,7 +189,7 @@ class App:
                 temp = path_to_file.split("/")
                 path_to_file = "\\".join(temp)
             try:
-                with open(path_to_file) as f:
+                with open(path_to_file, encoding='utf-8') as f:
                     temp = f.read()
             except Exception:
                 # Уведомление о неудачном действии с файлом

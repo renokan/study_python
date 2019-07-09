@@ -145,6 +145,10 @@ class App:
         new_dir = ld.askdirectory()
         if new_dir:
             os.chdir(new_dir)
+            # Через askdirectory путь к файлу приходит с разделителем "/"
+            if os.sep == '\\':
+                temp = new_dir.split("/")
+                new_dir = "\\".join(temp)
             self.dir_info.configure(text=new_dir)
 
     def create_file(self):
@@ -199,7 +203,6 @@ class App:
                 self.file_name.insert(0, path_to_file.split(os.sep)[-1])
                 # Обновляем информацию о файле
                 self.info_file(path_to_file)
-        # window_center(root)
 
     def info_file(self, path_to_file):
         """Собираем информацию о файле."""
@@ -224,18 +227,18 @@ class App:
         self.save_btn.config(state="active")
         self.del_btn.config(state="active")
         # Записываем данные по текущему файлу в переменную, для работы с файлом
-        self.cur_file = path_to_file
+        self.cur_file_path = path_to_file
+        self.cur_file_name = path_to_file.split(os.sep)[-1]
 
     def del_file(self):
         """Удаляем файл."""
-        name = self.cur_file.split(os.sep)[-1]
-        text = "Delete file {0}?".format(name)
+        text = "Delete file {0}?".format(self.cur_file_name)
         answer = mb.askyesno(title="Delete", message=text)
         if answer is True:
-            os.remove(self.cur_file)
-            self.cur_file = ""
+            os.remove(self.cur_file_path)
+            self.cur_file_path = ""
             # Уведомление об успешном действии с файлом
-            text = "File {0} has been deleted.".format(name)
+            text = "File {0} has been deleted.".format(self.cur_file_name)
             mb.showinfo(title="Info", message=text)
             # Чистим поля (tk.Entry) от данных
             self.file_name.delete(0, "end")
@@ -248,23 +251,22 @@ class App:
 
     def save_file(self):
         """Сохраняем содержимое файла."""
-        name = self.cur_file.split(os.sep)[-1]
-        text = "Save file {0}?".format(name)
+        text = "Save file {0}?".format(self.cur_file_name)
         answer = mb.askyesno(title="Save", message=text)
         if answer is True:
             data = self.file_data.get(1.0, "end")
             try:
-                with open(self.cur_file, 'w') as f:
+                with open(self.cur_file_path, 'w') as f:
                     f.write(data)
             except FileNotFoundError:
                 text = "\nNo such file or directory.\n"
                 mb.showerror(title="Error", message=text)
             else:
                 # Уведомление об успешном действии с файлом
-                text = "File {0} has been saved.".format(name)
+                text = "File {0} has been saved.".format(self.cur_file_name)
                 mb.showinfo(title="Info", message=text)
                 # Обновляем информацию о файле
-                self.info_file(self.cur_file)
+                self.info_file(self.cur_file_path)
 
 
 def app_info():

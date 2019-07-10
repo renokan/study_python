@@ -145,10 +145,10 @@ class App:
         new_dir = ld.askdirectory()
         if new_dir:
             os.chdir(new_dir)
-            # Через askdirectory путь к файлу приходит с разделителем "/"
-            if os.sep == '\\':
-                temp = new_dir.split("/")
-                new_dir = "\\".join(temp)
+            if os.sep != '/':
+                # Через askdirectory путь получаем с разделителем "/",
+                # а в Windows он "\" - поэтому меняем его.
+                new_dir = os.path.normpath(new_dir)
             self.dir_info.configure(text=new_dir)
 
     def create_file(self):
@@ -184,10 +184,10 @@ class App:
         """Загружаем файл."""
         path_to_file = ld.askopenfilename(initialdir=os.getcwd(), title="Choose a file", filetypes=(("TXT files", "*.txt"), ("all files", "*.*")))
         if path_to_file:
-            # Через askopenfilename путь к файлу приходит с разделителем "/"
-            if os.sep == '\\':
-                temp = path_to_file.split("/")
-                path_to_file = "\\".join(temp)
+            if os.sep != '/':
+                # Через askopenfilename путь получаем с разделителем "/",
+                # а в Windows он "\" - поэтому меняем его.
+                path_to_file = os.path.normpath(path_to_file)
             try:
                 with open(path_to_file, encoding='utf-8') as f:
                     temp = f.read()
@@ -200,7 +200,7 @@ class App:
                 self.file_data.delete(1.0, "end")
                 self.file_data.insert(1.0, temp)
                 self.file_name.delete(0, "end")
-                self.file_name.insert(0, path_to_file.split(os.sep)[-1])
+                self.file_name.insert(0, os.path.basename(path_to_file))
                 # Обновляем информацию о файле
                 self.info_file(path_to_file)
 
@@ -228,7 +228,7 @@ class App:
         self.del_btn.config(state="active")
         # Записываем данные по текущему файлу в переменную, для работы с файлом
         self.cur_file_path = path_to_file
-        self.cur_file_name = path_to_file.split(os.sep)[-1]
+        self.cur_file_name = os.path.basename(path_to_file)
 
     def del_file(self):
         """Удаляем файл."""

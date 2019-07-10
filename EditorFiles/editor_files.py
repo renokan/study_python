@@ -41,8 +41,7 @@ class App:
     def size_increase(self):
         """Увеличиваем окно программы."""
         if self.app_size != self.sizes[-1]:
-            x = self.sizes.index(self.app_size)
-            x += 1
+            x = self.sizes.index(self.app_size) + 1
             self.app_size = self.sizes[x]
             self.file_data.config(width=self.app_size[0], height=self.app_size[1])
             window_center(root)
@@ -50,8 +49,7 @@ class App:
     def size_reduce(self):
         """Уменьшаем окно программы."""
         if self.app_size != self.sizes[0]:
-            x = self.sizes.index(self.app_size)
-            x -= 1
+            x = self.sizes.index(self.app_size) - 1
             self.app_size = self.sizes[x]
             self.file_data.config(width=self.app_size[0], height=self.app_size[1])
             window_center(root)
@@ -72,13 +70,12 @@ class App:
 
     def reg_directory(self):
         """Выводим блок - текущая директория."""
-        cur_dir = os.getcwd()
         self.reg_dir = tk.Frame(self.root, height=70, bg="white")
         self.reg_dir.pack(fill="x")
 
         self.dir_label = tk.Label(self.reg_dir, text="Current directory:", bg="white", bd=0)
         self.dir_btn = tk.Button(self.reg_dir, text="Change", command=self.change_dir)
-        self.dir_info = tk.Label(self.reg_dir, text=cur_dir, bg="white", bd=0)
+        self.dir_info = tk.Label(self.reg_dir, text=os.getcwd(), bg="white", bd=0)
 
         self.dir_label.place(x=10, y=13)
         self.dir_btn.place(x=135, y=6)

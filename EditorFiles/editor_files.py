@@ -18,7 +18,7 @@ EditorFiles / Редактор файлов.
 
 import tkinter as tk
 from tkinter import messagebox as mb
-from tkinter import filedialog as ld
+from tkinter import filedialog as fd
 import os
 import time
 
@@ -142,7 +142,7 @@ class App:
 
     def change_dir(self):
         """Меняем текущую директорию."""
-        new_dir = ld.askdirectory()
+        new_dir = fd.askdirectory()
         if new_dir:
             os.chdir(new_dir)
             if os.sep != '/':
@@ -182,7 +182,7 @@ class App:
 
     def load_file(self):
         """Загружаем файл."""
-        path_to_file = ld.askopenfilename(initialdir=os.getcwd(), title="Choose a file", filetypes=(("TXT files", "*.txt"), ("all files", "*.*")))
+        path_to_file = fd.askopenfilename(initialdir=os.getcwd(), title="Choose a file", filetypes=(("TXT files", "*.txt"), ("all files", "*.*")))
         if path_to_file:
             if os.sep != '/':
                 # Через askopenfilename путь получаем с разделителем "/",

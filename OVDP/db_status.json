@@ -1,0 +1,12 @@
+{
+    "stocks": {
+        "name_db": "db_stocks.json",
+        "load": "https://bank.gov.ua/depo_securities?json",
+        "date": "Sun, 14 Jul 2019 12:10:12 GMT"
+    },
+    "auctions": {
+        "name_db": "db_auctions.json",
+        "load": "https://bank.gov.ua/NBUStatService/v1/statdirectory/ovdp?json",
+        "date": "Sun, 14 Jul 2019 12:10:15 GMT"
+    }
+}

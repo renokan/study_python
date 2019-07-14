@@ -61,52 +61,55 @@ def convert_auctions():
 
 def load_db():
     """Загружаем данные."""
-    # Импортируем requests когда он нужен, так работаем с локальной базой
-    import requests
+    # Пробуем импортировать модуль requests
     try:
-        stocks_temp = requests.get(load_data['stocks']['load'])
-        # >>> stocks_temp.headers
-        # 'content-type': 'application/json; encoding=utf-8',
-        # 'content-language': 'uk-UA',
-        # 'date': 'Thu, 11 Jul 2019 13:41:03 GMT',
-        # 'statusrequest': 'OK+%C2%E8%EA%EE%ED%E0%ED%EE'
-        #
-        # >>> stocks_temp.headers.get('date')
-        # 'Thu, 11 Jul 2019 13:41:03 GMT'
-    except requests.exceptions.RequestException as error_re:
-        # requests.exceptions.HTTPError
-        # requests.exceptions.ConnectionError
-        # requests.exceptions.ConnectTimeout
-        # requests.exceptions.ReadTimeout
-        return error_re
+        import requests
+    except ModuleNotFoundError:
+        return "ModuleRequestsNotFound"
     else:
-        stocks_data = stocks_temp.text
-        # stocks_temp.json()
-        # stocks_temp.content
-        stocks_file = path_to_db + load_data['stocks']['name_db']
-
-    try:
-        auctions_temp = requests.get(load_data['auctions']['load'])
-    except requests.exceptions.RequestException as error_re:
-        return error_re
-    else:
-        auctions_data = auctions_temp.text
-        auctions_file = path_to_db + load_data['auctions']['name_db']
-
-    try:
-        pass
-        with open(stocks_file, 'w') as db_s, open(auctions_file, 'w') as db_a:
-            db_s.write(stocks_data)
-            db_a.write(auctions_data)
-    except Exception:
-        return "Error saving to local file."
-    else:
-        load_data['stocks']['date'] = stocks_temp.headers.get('date')
-        load_data['auctions']['date'] = auctions_temp.headers.get('date')
-
-    # Дампим текущее стостояние баз
-    db_status = path_to_db + 'db_status.json'
-    json.dump(load_data, open(db_status, 'w'), indent=4)
+        # Пробуем загрузить данные справочника
+        try:
+            stocks_temp = requests.get(load_data['stocks']['load'])
+            # >>> stocks_temp.headers
+            # 'content-type': 'application/json; encoding=utf-8',
+            # 'content-language': 'uk-UA',
+            # 'date': 'Thu, 11 Jul 2019 13:41:03 GMT',
+            # 'statusrequest': 'OK+%C2%E8%EA%EE%ED%E0%ED%EE'
+            #
+            # >>> stocks_temp.headers.get('date')
+            # 'Thu, 11 Jul 2019 13:41:03 GMT'
+        except requests.exceptions.RequestException as error_re:
+            # requests.exceptions.HTTPError
+            # requests.exceptions.ConnectionError
+            # requests.exceptions.ConnectTimeout
+            # requests.exceptions.ReadTimeout
+            return error_re
+        else:
+            stocks_data = stocks_temp.text
+            # stocks_temp.json()
+            # stocks_temp.content
+            stocks_file = path_to_db + load_data['stocks']['name_db']
+        # Пробуем загрузить данные аукционов
+        try:
+            auctions_temp = requests.get(load_data['auctions']['load'])
+        except requests.exceptions.RequestException as error_re:
+            return error_re
+        else:
+            auctions_data = auctions_temp.text
+            auctions_file = path_to_db + load_data['auctions']['name_db']
+        # Пробуем записать данные в файл
+        try:
+            with open(stocks_file, 'w') as db_s, open(auctions_file, 'w') as db_a:
+                db_s.write(stocks_data)
+                db_a.write(auctions_data)
+        except Exception:
+            return "Error saving to local file."
+        else:
+            load_data['stocks']['date'] = stocks_temp.headers.get('date')
+            load_data['auctions']['date'] = auctions_temp.headers.get('date')
+        # Дампим текущее стостояние баз
+        db_status = path_to_db + 'db_status.json'
+        json.dump(load_data, open(db_status, 'w'), indent=4)
 
 
 def check_data():
@@ -114,11 +117,19 @@ def check_data():
     check_stocks = convert_stocks()
     check_auction = convert_auctions()
     if check_stocks or check_auction:
+        # Если конвертация данных (локальных) вернула ошибку,
+        # тогда пробуем загрузить новые из интернета.
         check_load = load_db()
         if check_load:
-            return "No data. Error loading from external source."
+            # Если загрузка вернула ошибку, тогда смотрим какую.
+            if check_load == "ModuleRequestsNotFound":
+                return "You need to install the module 'requests'."
+            else:
+                return "No data. Error loading from external source."
         else:
+            # Если загрузка прошла успешно, тогда пробуем конвертировать снова.
             check_stocks = convert_stocks()
             check_auction = convert_auctions()
             if check_stocks or check_auction:
+                # Если опять ошибка, тогда сообщаем об этом.
                 return "No data. Error converting from local file."

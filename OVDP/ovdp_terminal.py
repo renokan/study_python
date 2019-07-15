@@ -135,7 +135,7 @@ def auctions_stat():
     for value in info_auctions.values():
         year_auct = int(value['auctiondate'].split(".")[2])
         year_repay = int(value['repaydate'].split(".")[2])
-        money = int(value['attraction'])
+        money = value['attraction']
         if money > 0:
             auct_ok += 1
             if value['valcode'] == 'UAH':
@@ -174,38 +174,38 @@ def auctions_stat():
             output.append("Год \tКол\tПолучено денег (UAH)")
             output.append("----\t---\t---------------------")
             for key, value in sorted(uah_in.items()):
-                output.append("{0}\t{1}\t{2}".format(key, len(value), sum(value)))
+                output.append("{0}\t{1}\t{2}".format(key, len(value), round(sum(value))))
             output.append("")
         if usd_in:
             output.append("Год \tКол\tПолучено денег (USD)")
             output.append("----\t---\t---------------------")
             for key, value in sorted(usd_in.items()):
-                output.append("{0}\t{1}\t{2}".format(key, len(value), sum(value)))
+                output.append("{0}\t{1}\t{2}".format(key, len(value), round(sum(value))))
             output.append("")
         if eur_in:
             output.append("Год \tКол\tПолучено денег (EUR)")
             output.append("----\t---\t---------------------")
             for key, value in sorted(eur_in.items()):
-                output.append("{0}\t{1}\t{2}".format(key, len(value), sum(value)))
+                output.append("{0}\t{1}\t{2}".format(key, len(value), round(sum(value))))
             output.append("")
         # "Нужно вернуть"
         if uah_out:
             output.append("Год \tКол\tНужно вернуть (UAH)")
             output.append("----\t---\t-------------------")
             for key, value in sorted(uah_out.items()):
-                output.append("{0}\t{1}\t{2}".format(key, len(value), sum(value)))
+                output.append("{0}\t{1}\t{2}".format(key, len(value), round(sum(value))))
             output.append("")
         if usd_out:
             output.append("Год \tКол\tНужно вернуть (USD)")
             output.append("----\t---\t-------------------")
             for key, value in sorted(usd_out.items()):
-                output.append("{0}\t{1}\t{2}".format(key, len(value), sum(value)))
+                output.append("{0}\t{1}\t{2}".format(key, len(value), round(sum(value))))
             output.append("")
         if eur_out:
             output.append("Год \tКол\tНужно вернуть (EUR)")
             output.append("----\t---\t-------------------")
             for key, value in sorted(eur_out.items()):
-                output.append("{0}\t{1}\t{2}".format(key, len(value), sum(value)))
+                output.append("{0}\t{1}\t{2}".format(key, len(value), round(sum(value))))
             output.append("")
         # Возвращаем итоговые данные
         return output
@@ -227,7 +227,7 @@ def auctions_year(check_year=None):
         for value in info_auctions.values():
             year_auct = int(value['auctiondate'].split(".")[2])
             year_repay = int(value['repaydate'].split(".")[2])
-            money = int(value['attraction'])
+            money = value['attraction']
             if check_year == year_auct:
                 if money > 0:
                     auct_in[0] += 1
@@ -277,38 +277,38 @@ def auctions_year(check_year=None):
                 output.append("Мес\tКол\tПолучено денег (UAH)")
                 output.append("---\t---\t---------------------")
                 for key, value in sorted(uah_in.items()):
-                    output.append("{0}\t{1}\t{2}".format(key, len(value), sum(value)))
+                    output.append("{0}\t{1}\t{2}".format(key, len(value), round(sum(value))))
                 output.append("")
             if usd_in:
                 output.append("Мес\tКол\tПолучено денег (USD)")
                 output.append("---\t---\t---------------------")
                 for key, value in sorted(usd_in.items()):
-                    output.append("{0}\t{1}\t{2}".format(key, len(value), sum(value)))
+                    output.append("{0}\t{1}\t{2}".format(key, len(value), round(sum(value))))
                 output.append("")
             if eur_in:
                 output.append("Мес\tКол\tПолучено денег (EUR)")
                 output.append("---\t---\t---------------------")
                 for key, value in sorted(eur_in.items()):
-                    output.append("{0}\t{1}\t{2}".format(key, len(value), sum(value)))
+                    output.append("{0}\t{1}\t{2}".format(key, len(value), round(sum(value))))
                 output.append("")
             # "Нужно вернуть"
             if uah_out:
                 output.append("Мес\tКол\tНужно вернуть (UAH)")
                 output.append("---\t---\t-------------------")
                 for key, value in sorted(uah_out.items()):
-                    output.append("{0}\t{1}\t{2}".format(key, len(value), sum(value)))
+                    output.append("{0}\t{1}\t{2}".format(key, len(value), round(sum(value))))
                 output.append("")
             if usd_out:
                 output.append("Мес\tКол\tНужно вернуть (USD)")
                 output.append("---\t---\t-------------------")
                 for key, value in sorted(usd_out.items()):
-                    output.append("{0}\t{1}\t{2}".format(key, len(value), sum(value)))
+                    output.append("{0}\t{1}\t{2}".format(key, len(value), round(sum(value))))
                 output.append("")
             if eur_out:
                 output.append("Мес\tКол\tНужно вернуть (EUR)")
                 output.append("---\t---\t-------------------")
                 for key, value in sorted(eur_out.items()):
-                    output.append("{0}\t{1}\t{2}".format(key, len(value), sum(value)))
+                    output.append("{0}\t{1}\t{2}".format(key, len(value), round(sum(value))))
                 output.append("")
             # Возвращаем итоговые данные
             return output

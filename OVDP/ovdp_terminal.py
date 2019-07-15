@@ -174,6 +174,7 @@ def auctions_stat():
             output.append("Год \tКол\tПолучено денег (UAH)")
             output.append("----\t---\t---------------------")
             for key, value in sorted(uah_in.items()):
+                # round(sum(value)) --> 284665159.998555 --> 284665160
                 output.append("{0}\t{1}\t{2}".format(key, len(value), round(sum(value))))
             output.append("")
         if usd_in:

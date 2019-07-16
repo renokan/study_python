@@ -11,3 +11,12 @@
 ![Screenshot](screenshot-ovdp_terminal-1.png)
 
 ![Screenshot](screenshot-ovdp_terminal-2.png)
+
+### ovdp_report.py
+*без графического интерфейса*
+
+**Особенности реализации:**
+- Для генерации отчетов (в формате svg) нужен **модуль pygal**, должен быть установлен отдельно.
+- Файлы svg сохраняются **в папке report**, где доступны для просмотра в html документе.
+
+![Screenshot](screenshot-ovdp_report.png)

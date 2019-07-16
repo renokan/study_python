@@ -4,20 +4,20 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Отчет по аукционам ОВГЗ</title>
     <style>
-        html, body {
-        	margin: 0px;
-        	padding: 0px;
-        	height: 100%;
-            background: #e7e7e7;
-        }
-        #wrapper {
-        	margin: 0px auto;
+		html, body {
+			margin: 0px;
+			padding: 0px;
+			height: 100%;
+			background: #e7e7e7;
+		}
+		#wrapper {
+			margin: 0px auto;
 			padding-bottom: 1rem;
-        }
-        h1, h2, h3 {
-            text-align: center;
+		}
+		h1, h2, h3 {
+			text-align: center;
 			margin: 0.5rem 0;
-        }
+		}
 		.info {
 			border-left: 2px solid;
 			padding-left: 0.4rem;
@@ -30,13 +30,13 @@
 		p .term {
 			font-style: italic;
 		}
-        .report {
-            margin: 0.5rem;
-        	padding: 0.5rem 1rem;
-        	background: #ffffff;
-        	border: 1px solid #ddd;
-        	box-shadow: 0px 10px 5px 0px rgba(0,0,0,0.75);
-        }
+		.report {
+			margin: 0.5rem;
+			padding: 0.5rem 1rem;
+			background: #ffffff;
+			border: 1px solid #ddd;
+			box-shadow: 0px 10px 5px 0px rgba(0,0,0,0.75);
+		}
 		@media all and (min-width: 900px) {
 			#wrapper {
 				width: 900px;
@@ -58,20 +58,19 @@
 			p .term {
 				white-space: nowrap;
 			}
-	        .report {
-	            margin: 2rem 0.8rem;
-	        	padding: 0.8rem 1.6rem;
-	        	background: #ffffff;
-	        	border: 1px solid #ddd;
-	        	box-shadow: 0px 10px 5px 0px rgba(0,0,0,0.75);
-	        }
+			.report {
+				margin: 2rem 0.8rem;
+				padding: 0.8rem 1.6rem;
+				background: #ffffff;
+				border: 1px solid #ddd;
+				box-shadow: 0px 10px 5px 0px rgba(0,0,0,0.75);
+			}
 		}
     </style>
 </head>
 <body>
 	<div id="wrapper">
         <h1>Отчет по аукционам ОВГЗ</h1>
-
         <div class="info">
              <p><strong>Что анализируем</strong>: Результати розміщення облігацій внутрішніх державних позик.</p>
 			 <p><strong>Источник данных</strong>: API (в формате json) Национального банка Украины (НБУ).</p>
@@ -80,21 +79,18 @@
 			 <p>Для аукционов в национальной валюте (грн) период начинается с 2009 года, в оригинале с 2001 года.</p>
 			 <p><strong>Описание терминов</strong>: "In" - получено денег; "Out" - нужно вернуть; billion - млрд. грн; million - млн. USD/EUR.</p>
         </div>
-
         <div class="report">
-             <object type="image/svg+xml" data="svg_report_uah.svg">
+             <object type="image/svg+xml" data="svg_report_uah.svg" width="100%">
               Your browser does not support SVG
              </object>
         </div>
-
         <div class="report">
-             <object type="image/svg+xml" data="svg_report_usd.svg">
+             <object type="image/svg+xml" data="svg_report_usd.svg" width="100%">
               Your browser does not support SVG
              </object>
         </div>
-
         <div class="report">
-             <object type="image/svg+xml" data="svg_report_eur.svg">
+             <object type="image/svg+xml" data="svg_report_eur.svg" width="100%">
               Your browser does not support SVG
              </object>
         </div>

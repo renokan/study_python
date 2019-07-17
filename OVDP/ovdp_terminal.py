@@ -307,7 +307,8 @@ def auctions_year(check_year=None):
             return output
         else:
             return "auctions_year(): For this parameter '{}' - no data.".format(check_year)
-    return "auctions_year(): There is no year for data analysis."
+    else:
+        return "auctions_year(): There is no year for data analysis."
 
 
 def show(out=None):

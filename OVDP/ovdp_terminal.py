@@ -32,9 +32,7 @@ def stocks_stat():
         output = []
         # Считаем данные по номиналам
         if valcode:
-            stat_valcode = {}
-            for i in set(valcode):
-                stat_valcode[i] = valcode.count(i)
+            stat_valcode = {key: valcode.count(key) for key in set(valcode)}
             output.append("Кіл\tНомінал (UAH/USD/EUR) цінних паперів")
             output.append("---\t---------------")
             for key, value in sorted(stat_valcode.items(), reverse=True, key=lambda x: x[1]):
@@ -42,9 +40,7 @@ def stocks_stat():
             output.append("")
         # Считаем данные по типам ЦП
         if cptype:
-            stat_cptype = {}
-            for i in set(cptype):
-                stat_cptype[i] = cptype.count(i)
+            stat_cptype = {key: cptype.count(key) for key in set(cptype)}
             output.append("Кіл\tТип ЦП цінних паперів")
             output.append("---\t---------------")
             for key, value in sorted(stat_cptype.items(), reverse=True, key=lambda x: x[1]):
@@ -58,9 +54,7 @@ def stocks_stat():
             output.append("")
         # Считаем данные по видам ЦП
         if cpdescr:
-            stat_cpdescr = {}
-            for i in set(cpdescr):
-                stat_cpdescr[i] = cpdescr.count(i)
+            stat_cpdescr = {key: cpdescr.count(key) for key in set(cpdescr)}
             output.append("Кіл\tВид ЦП цінних паперів")
             output.append("---\t---------------")
             for key, value in sorted(stat_cpdescr.items(), reverse=True, key=lambda x: x[1]):
@@ -68,9 +62,7 @@ def stocks_stat():
             output.append("")
         # Считаем данные по емітентам
         if emitname:
-            stat_emitname = {}
-            for i in set(emitname):
-                stat_emitname[i] = emitname.count(i)
+            stat_emitname = {key: emitname.count(key) for key in set(emitname)}
             output.append("Кіл\tЕмітент цінних паперів")
             output.append("---\t---------------")
             for key, value in sorted(stat_emitname.items(), reverse=True, key=lambda x: x[1]):

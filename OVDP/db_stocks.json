@@ -27933,27 +27933,6 @@
     ]
   },
   { 
-    "cpcode": "UA4000203715",
-    "nominal": 1000,
-    "auk_proc": 19.5,
-    "pgs_date": "17.07.2019",
-    "val_date": "27.03.2019",
-    "cptype": "DCP",
-    "cpdescr": "Короткострокові дисконтні",
-    "pay_period": 365,
-    "val_code": "UAH",
-    "emit_okpo": "00013480",
-    "emit_name": "МІН ФІН",
-    "payments": [ 
-      { 
-        "pay_date": "17.07.2019",
-        "pay_type": "2",
-        "pay_val": 1000,
-        "array": "true"
-      }
-    ]
-  },
-  { 
     "cpcode": "UA4000203723",
     "nominal": 1000,
     "auk_proc": 18,
@@ -28451,6 +28430,27 @@
     "payments": [ 
       { 
         "pay_date": "16.10.2019",
+        "pay_type": "2",
+        "pay_val": 1000,
+        "array": "true"
+      }
+    ]
+  },
+  { 
+    "cpcode": "UA4000204457",
+    "nominal": 1000,
+    "auk_proc": 6.5,
+    "pgs_date": "09.07.2020",
+    "val_date": "18.07.2019",
+    "cptype": "DCP",
+    "cpdescr": "Короткострокові дисконтні",
+    "pay_period": 366,
+    "val_code": "USD",
+    "emit_okpo": "00013480",
+    "emit_name": "МІН ФІН",
+    "payments": [ 
+      { 
+        "pay_date": "09.07.2020",
         "pay_type": "2",
         "pay_val": 1000,
         "array": "true"

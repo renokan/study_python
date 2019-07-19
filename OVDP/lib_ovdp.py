@@ -99,7 +99,7 @@ def load_db():
             auctions_file = path_to_db + load_data['auctions']['name_db']
         # Пробуем записать данные в файл
         try:
-            with open(stocks_file, 'w') as db_s, open(auctions_file, 'w') as db_a:
+            with open(stocks_file, 'w', encoding='utf-8') as db_s, open(auctions_file, 'w', encoding='utf-8') as db_a:
                 db_s.write(stocks_data)
                 db_a.write(auctions_data)
         except Exception:

@@ -248,7 +248,9 @@ if __name__ == '__main__':
                 custom_style = Style(colors=('#0d00d6', '#ff0000'),
                                      background='#ffffff'
                                      )
-                print(auctions_stat())
-                print(auctions_year(2019))
+                print()
+                print("\t", auctions_stat())
+                print("\t", auctions_year(2019))
+                print()
         else:
             print("\n\n\tError: No directory", path_to_report, "\n")

@@ -40,7 +40,7 @@ def convert_stocks():
                 #                  'payments': [{'pay_val': 21.92, 'pay_type': '1',
                 #                                'pay_date': '24.03.2010', 'array': 'true'},
             else:
-                return "Error converting from local file. No key='cpcode'."
+                return "convert_stocks(): Error converting from local file. No key='cpcode'."
 
 
 def convert_auctions():
@@ -56,7 +56,7 @@ def convert_auctions():
                 auct_num = data[i]['auctionnum']
                 info_auctions[(auct_year, auct_num)] = data[i]
         else:
-            return "Error converting from local file. No key='auctiondate'."
+            return "convert_auctions(): Error converting from local file. No key='auctiondate'."
 
 
 def load_db():
@@ -103,7 +103,7 @@ def load_db():
                 db_s.write(stocks_data)
                 db_a.write(auctions_data)
         except Exception:
-            return "Error saving to local file."
+            return "load_db(): Error saving to local file."
         else:
             load_data['stocks']['date'] = stocks_temp.headers.get('date')
             load_data['auctions']['date'] = auctions_temp.headers.get('date')
@@ -123,13 +123,13 @@ def check_data():
         if check_load:
             # Если загрузка вернула ошибку, тогда смотрим какую.
             if check_load == "ModuleRequestsNotFound":
-                return "You need to install the module 'requests'."
+                return "check_data(): You need to install the module 'requests'."
             else:
-                return "No data. Error loading from external source."
+                return "check_data(): No data. Error loading from external source."
         else:
             # Если загрузка прошла успешно, тогда пробуем конвертировать снова.
             check_stocks = convert_stocks()
             check_auction = convert_auctions()
             if check_stocks or check_auction:
                 # Если опять ошибка, тогда сообщаем об этом.
-                return "No data. Error converting from local file."
+                return "check_data(): No data. Error converting from local file."

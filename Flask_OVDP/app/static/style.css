@@ -1,0 +1,41 @@
+body {
+    font-family: 'Open Sans', sans-serif;
+}
+
+h1 {
+    text-align: center;
+}
+
+/* ul#menu li.active a {
+    color: #ffd885;
+} */
+
+ul#menu li:hover a {
+    color: #ffd885;
+}
+
+
+@media all and (max-width: 960px) {
+  #select-year-right {
+    display: none;
+  }
+}
+
+@media all and (min-width: 960px) {
+  #select-year-bottom {
+    display: none;
+  }
+
+  ul#menu li {
+      border-bottom: 2px solid #f8f9fa;
+  }
+
+  ul#menu li.active {
+      border-bottom-color: #ffd885;
+  }
+
+  ul#menu li:hover {
+      border-bottom-color: #ffd885;
+  }
+
+}

@@ -30,7 +30,7 @@
             <div class="card-body">
                 <p class="card-text">{{ x['paydate'] }}</p>
                 <p class="card-text">{{ x['incomelevel'] }}%</p>
-                <p class="card-text">{{ x['attraction']|round(1) }} <strong>{{ x['valcode'] }}</strong></p>
+                <p class="card-text">{{ x['attraction'] | money_format }} <strong>{{ x['valcode'] }}</strong></p>
                 <p class="card-text">{{ x['repaydate'] }}</p>
             </div>
             <div class="card-footer">

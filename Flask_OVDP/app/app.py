@@ -72,6 +72,11 @@ def inject_year():
     return dict(menu_year=current_year)
 
 
+@app.template_filter()
+def money_format(value):
+    return format(round(value), ',d')
+
+
 if __name__ == '__main__':
     app.debug = True
     app.run()

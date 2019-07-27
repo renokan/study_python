@@ -1,29 +1,38 @@
 {% extends "base.html" %}
 
-{% block title %}Аукционы ОВГЗ{% endblock %}
+{% block title %}Аукционы ОВГЗ {% if year %}- {{ year }} год{% endif %}{% endblock %}
 
 {% block content %}
 
     <div class="container">
-        <h1 class="m-3">Аукционы ОВГЗ</h1>
+        <h1 class="m-3">Аукционы ОВГЗ {% if year %}- <span class="badge badge-info">{{ year }}</span> год{% endif %}</h1>
         {% if auctions %}
-        <div class="d-flex justify-content-center align-content-center flex-wrap text-center">
-            {% for x in auctions %}
-            <div class="card m-2 shadow rounded-0" style="min-width: 230px;">
-                <div class="card-header">{{ x['auctionnum'] }}</div>
-                <div class="card-body">
-                    <p class="card-text">{{ x['paydate'] }}</p>
-                    <p class="card-text">{{ x['incomelevel'] }}%</p>
-                    <p class="card-text">{{ x['attraction'] | money_format }} <strong>{{ x['valcode'] }}</strong></p>
-                    <p class="card-text">{{ x['repaydate'] }}</p>
+            <div class="d-flex justify-content-center align-content-center flex-wrap text-center">
+                {% for x in auctions %}
+                <div class="card m-2 shadow rounded-0" style="min-width: 250px;">
+                    <div class="card-header">{{ x['auctionnum'] }}</div>
+                    <div class="card-body">
+                        <p class="card-text">{{ x['paydate'] }}</p>
+                        <p class="card-text">{{ x['incomelevel'] | round(1) }}%</p>
+                        <p class="card-text">{{ x['attraction'] | money_format }} <strong>{{ x['valcode'] }}</strong></p>
+                        <p class="card-text">{{ x['repaydate'] }}</p>
+                    </div>
+                    <div class="card-footer">
+                        <small>{{ x['stockcode'] }}</small>
+                    </div>
                 </div>
-                <div class="card-footer">
-                    <small>{{ x['stockcode'] }}</small>
-                </div>
+                {% endfor %}
             </div>
-            {% endfor %}
-        </div>
+            <div class="text-center p-4">{% if previous != 0 %}<a href="?page={{ previous }}{% if year %}&year={{ year }}{% endif %}" title="Previous page">&laquo;</a>&nbsp; {% endif %}Текущая страница {{ page }} (из {{ pages }}){% if next != 0 %} &nbsp;<a href="?page={{ next }}{% if year %}&year={{ year }}{% endif %}" title="Next page">&raquo;</a>{% endif %}</div>
+            {% if list_year %}
+            <div class="list-group list-group-horizontal mb-3">
+                {% for year in list_year %}
+                <a class="list-group-item list-group-item-action text-center p-1" href="{{ url_for('auctions') }}?page=1&year={{ year }}"><small>{{ year }}</small></a>
+                {% endfor %}
+            </div>
+            {% endif %}
         {% endif %}
+
     </div>
 
 {% endblock %}

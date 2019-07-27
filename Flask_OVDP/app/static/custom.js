@@ -4,5 +4,4 @@ $(document).ready(function() {
 
     $('a').removeClass('active');
     $('a[href="' + location.pathname + '"]').closest('a').addClass('active');
-    console.log(location.pathname)
 });

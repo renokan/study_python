@@ -5,7 +5,7 @@
 {% block content %}
 
     <div class="container">
-        <h1 class="m-3">Аукционы ОВГЗ {% if year %}- <span class="badge badge-info">{{ year }}</span> год{% endif %}</h1>
+        <h1 class="mt-3">Аукционы ОВГЗ {% if year %}- <span class="badge badge-info">{{ year }}</span> год{% endif %}</h1>
         {% if auctions %}
             <div class="d-flex justify-content-center align-content-center flex-wrap text-center">
                 {% for x in auctions %}
@@ -31,8 +31,11 @@
                 {% endfor %}
             </div>
             {% endif %}
+        {% else %}
+            <div class="text-center">Попробуйте открыть страницу позже.</div>
+            <div class="text-center"><img src="../static/404.png"></div>
+            <div class="text-center">Что-то пошло не так и данные отсутствуют...</div>
         {% endif %}
-
     </div>
 
 {% endblock %}

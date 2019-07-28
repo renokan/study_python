@@ -111,6 +111,8 @@ def auctions():
                                previous=previous, page=page, pages=pages, next=next,
                                year=year, list_year=years
                                )
+    else:
+        return render_template("auctions.html")
 
 
 @app.errorhandler(404)

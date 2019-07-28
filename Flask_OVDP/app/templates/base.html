@@ -46,11 +46,37 @@
     {% block content %}
     {% endblock %}
 </div>
+
+<div id="footer">
+    <div class="container">
+        <hr class="w-50">
+        <h2 class="mt-4">Облигации внутреннего госзайма (ОВГЗ)</h2>
+        <p>Облигации внутреннего государственного займа Украины (ОВГЗ) — государственные ценные бумаги, размещаемые исключительно на внутреннем рынке.</p>
+        <ul>
+            <li>Гарантия государства на 100% приобретенных ОВГЗ</li>
+            <li>Отсутствует подоходный налог на доход, полученный от ОВГЗ</li>
+            <li>Возможность досрочной продажи ОВГЗ на вторичном рынке</li>
+        </ul>
+        <p>ОВГЗ подтверждают обязательства Украины по возмещению предъявителям этих облигаций их номинальной стоимости с выплатой дохода в соответствии с условиями размещения облигаций.</p>
+        <p>Эмитентом ОВГЗ является Министерство финансов Украины. Погашение ОВГЗ в полном объеме (100% суммы) гарантировано государством.</p>
+        <p>Приобретение ОВГЗ, эмитированных в иностранной валюте, осуществляется в гривне по текущему курсу к иностранной валюте. Выплата доходов в виде процентов осуществляется Министерством финансов в иностранной валюте.</p>
+    </div>
+</div>
+
+<div id="bootom-menu" class="bg-light" style="display: none;">
+    <div class="container">
+        <div class="d-flex justify-content-between">
+            <div class="p-1">OVDP <span class="badge badge-warning">{{ menu_year }}</span></div>
+            <div class="p-1"><span id="go-top">Наверх</span></div>
+        </div>
+    </div>
+</div>
+
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<script src="http://code.jquery.com/jquery-3.4.1.min.js"></script>
 <!-- Custom JS for this page -->
 <script src="{{ url_for('static', filename='custom.js') }}"></script>
 </body>

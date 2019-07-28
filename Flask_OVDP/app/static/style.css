@@ -6,9 +6,24 @@ h1 {
     text-align: center;
 }
 
-/* ul#menu li.active a {
+#footer {
+    background-image: linear-gradient(white, yellow);
+    padding-bottom: 3rem;
+}
+
+#bootom-menu {
+    position: fixed;
+    bottom: 0px;
+    width: 100%;
+    padding: .5rem 1rem;
+    box-shadow: 0px 0px 15px 5px rgba(0,0,0,0.75);
+    opacity: .9;
+}
+
+#go-top:hover {
+	cursor: pointer;
     color: #ffd885;
-} */
+}
 
 ul#menu li:hover a {
     color: #ffd885;

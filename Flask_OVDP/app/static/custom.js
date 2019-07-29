@@ -5,7 +5,8 @@ $(document).ready(function() {
     $('a').removeClass('active');
     $('a[href="' + location.pathname + '"]').closest('a').addClass('active');
 
-    var showBottomMenu = $(window).height() * 1.1;
+    // var showBottomMenu = $(window).height() * 1.1;
+    var showBottomMenu = 60
     $('#bootom-menu').each(function() {
         if ($(window).scrollTop() <= showBottomMenu) $(this).fadeOut('slow');
         var scrollDiv = $(this);

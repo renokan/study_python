@@ -22,11 +22,11 @@ h1 {
 
 #go-top:hover {
 	cursor: pointer;
-    color: #ffd885;
+    color: #007bff;
 }
 
 ul#menu li:hover a {
-    color: #ffd885;
+    color: #007bff;
 }
 
 

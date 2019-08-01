@@ -1527,141 +1527,6 @@
     ]
   },
   { 
-    "cpcode": "UA4000185557",
-    "nominal": 1000,
-    "auk_proc": 9.5,
-    "pgs_date": "22.07.2019",
-    "val_date": "28.07.2014",
-    "cptype": "DCP",
-    "cpdescr": "ОВДП-ПДВ",
-    "pay_period": 182,
-    "val_code": "UAH",
-    "emit_okpo": "00013480",
-    "emit_name": "МІН ФІН",
-    "payments": [ 
-      { 
-        "pay_date": "26.01.2015",
-        "pay_type": "1",
-        "pay_val": 47.5,
-        "array": "true"
-      },
-      { 
-        "pay_date": "26.01.2015",
-        "pay_type": "2",
-        "pay_val": 100,
-        "array": "true"
-      },
-      { 
-        "pay_date": "27.07.2015",
-        "pay_type": "1",
-        "pay_val": 42.75,
-        "array": "true"
-      },
-      { 
-        "pay_date": "27.07.2015",
-        "pay_type": "2",
-        "pay_val": 100,
-        "array": "true"
-      },
-      { 
-        "pay_date": "25.01.2016",
-        "pay_type": "1",
-        "pay_val": 38,
-        "array": "true"
-      },
-      { 
-        "pay_date": "25.01.2016",
-        "pay_type": "2",
-        "pay_val": 100,
-        "array": "true"
-      },
-      { 
-        "pay_date": "25.07.2016",
-        "pay_type": "1",
-        "pay_val": 33.25,
-        "array": "true"
-      },
-      { 
-        "pay_date": "25.07.2016",
-        "pay_type": "2",
-        "pay_val": 100,
-        "array": "true"
-      },
-      { 
-        "pay_date": "23.01.2017",
-        "pay_type": "1",
-        "pay_val": 28.5,
-        "array": "true"
-      },
-      { 
-        "pay_date": "23.01.2017",
-        "pay_type": "2",
-        "pay_val": 100,
-        "array": "true"
-      },
-      { 
-        "pay_date": "24.07.2017",
-        "pay_type": "1",
-        "pay_val": 23.75,
-        "array": "true"
-      },
-      { 
-        "pay_date": "24.07.2017",
-        "pay_type": "2",
-        "pay_val": 100,
-        "array": "true"
-      },
-      { 
-        "pay_date": "22.01.2018",
-        "pay_type": "1",
-        "pay_val": 19,
-        "array": "true"
-      },
-      { 
-        "pay_date": "22.01.2018",
-        "pay_type": "2",
-        "pay_val": 100,
-        "array": "true"
-      },
-      { 
-        "pay_date": "23.07.2018",
-        "pay_type": "1",
-        "pay_val": 14.25,
-        "array": "true"
-      },
-      { 
-        "pay_date": "23.07.2018",
-        "pay_type": "2",
-        "pay_val": 100,
-        "array": "true"
-      },
-      { 
-        "pay_date": "21.01.2019",
-        "pay_type": "1",
-        "pay_val": 9.5,
-        "array": "true"
-      },
-      { 
-        "pay_date": "21.01.2019",
-        "pay_type": "2",
-        "pay_val": 100,
-        "array": "true"
-      },
-      { 
-        "pay_date": "22.07.2019",
-        "pay_type": "1",
-        "pay_val": 4.75,
-        "array": "true"
-      },
-      { 
-        "pay_date": "22.07.2019",
-        "pay_type": "2",
-        "pay_val": 100,
-        "array": "true"
-      }
-    ]
-  },
-  { 
     "cpcode": "UA4000185656",
     "nominal": 1000,
     "auk_proc": 14.3,
@@ -1760,87 +1625,6 @@
       },
       { 
         "pay_date": "19.05.2021",
-        "pay_type": "2",
-        "pay_val": 1000,
-        "array": "true"
-      }
-    ]
-  },
-  { 
-    "cpcode": "UA4000185755",
-    "nominal": 1000,
-    "auk_proc": 14.3,
-    "pgs_date": "31.07.2019",
-    "val_date": "08.08.2014",
-    "cptype": "DCP",
-    "cpdescr": "Середньострокові",
-    "pay_period": 182,
-    "val_code": "UAH",
-    "emit_okpo": "00013480",
-    "emit_name": "МІН ФІН",
-    "payments": [ 
-      { 
-        "pay_date": "04.02.2015",
-        "pay_type": "1",
-        "pay_val": 71.5,
-        "array": "true"
-      },
-      { 
-        "pay_date": "05.08.2015",
-        "pay_type": "1",
-        "pay_val": 71.5,
-        "array": "true"
-      },
-      { 
-        "pay_date": "03.02.2016",
-        "pay_type": "1",
-        "pay_val": 71.5,
-        "array": "true"
-      },
-      { 
-        "pay_date": "03.08.2016",
-        "pay_type": "1",
-        "pay_val": 71.5,
-        "array": "true"
-      },
-      { 
-        "pay_date": "01.02.2017",
-        "pay_type": "1",
-        "pay_val": 71.5,
-        "array": "true"
-      },
-      { 
-        "pay_date": "02.08.2017",
-        "pay_type": "1",
-        "pay_val": 71.5,
-        "array": "true"
-      },
-      { 
-        "pay_date": "31.01.2018",
-        "pay_type": "1",
-        "pay_val": 71.5,
-        "array": "true"
-      },
-      { 
-        "pay_date": "01.08.2018",
-        "pay_type": "1",
-        "pay_val": 71.5,
-        "array": "true"
-      },
-      { 
-        "pay_date": "30.01.2019",
-        "pay_type": "1",
-        "pay_val": 71.5,
-        "array": "true"
-      },
-      { 
-        "pay_date": "31.07.2019",
-        "pay_type": "1",
-        "pay_val": 71.5,
-        "array": "true"
-      },
-      { 
-        "pay_date": "31.07.2019",
         "pay_type": "2",
         "pay_val": 1000,
         "array": "true"
@@ -27663,27 +27447,6 @@
     ]
   },
   { 
-    "cpcode": "UA4000202576",
-    "nominal": 1000,
-    "auk_proc": 7,
-    "pgs_date": "18.07.2019",
-    "val_date": "22.10.2018",
-    "cptype": "DCP",
-    "cpdescr": "Короткострокові дисконтні",
-    "pay_period": 365,
-    "val_code": "USD",
-    "emit_okpo": "00013480",
-    "emit_name": "МІН ФІН",
-    "payments": [ 
-      { 
-        "pay_date": "18.07.2019",
-        "pay_type": "2",
-        "pay_val": 1000,
-        "array": "true"
-      }
-    ]
-  },
-  { 
     "cpcode": "UA4000202667",
     "nominal": 1000,
     "auk_proc": 18.5,
@@ -28451,6 +28214,57 @@
     "payments": [ 
       { 
         "pay_date": "09.07.2020",
+        "pay_type": "2",
+        "pay_val": 1000,
+        "array": "true"
+      }
+    ]
+  },
+  { 
+    "cpcode": "UA4000204556",
+    "nominal": 1000,
+    "auk_proc": 16.42,
+    "pgs_date": "17.11.2021",
+    "val_date": "31.07.2019",
+    "cptype": "DCP",
+    "cpdescr": "Середньострокові",
+    "pay_period": 182,
+    "val_code": "UAH",
+    "emit_okpo": "00013480",
+    "emit_name": "МІН ФІН",
+    "payments": [ 
+      { 
+        "pay_date": "20.11.2019",
+        "pay_type": "1",
+        "pay_val": 82.1,
+        "array": "true"
+      },
+      { 
+        "pay_date": "20.05.2020",
+        "pay_type": "1",
+        "pay_val": 82.1,
+        "array": "true"
+      },
+      { 
+        "pay_date": "18.11.2020",
+        "pay_type": "1",
+        "pay_val": 82.1,
+        "array": "true"
+      },
+      { 
+        "pay_date": "19.05.2021",
+        "pay_type": "1",
+        "pay_val": 82.1,
+        "array": "true"
+      },
+      { 
+        "pay_date": "17.11.2021",
+        "pay_type": "1",
+        "pay_val": 82.1,
+        "array": "true"
+      },
+      { 
+        "pay_date": "17.11.2021",
         "pay_type": "2",
         "pay_val": 1000,
         "array": "true"

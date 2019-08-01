@@ -14,3 +14,7 @@
 
 + **OVDP/** - Данные по ОВГЗ
   + **ovdp_terminal.py** - *без графического интерфейса*
+  + **ovdp_report.py** - *без графического интерфейса*
+
++ **Flask_OVDP/** - Сайт по ОВГЗ (фреймворк Flask)
+  + **app/** - *app.py + db_auctions.json + tempaltes/ + static/*

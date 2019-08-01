@@ -59,7 +59,7 @@ def auctions_stat():
             uah_chart = pygal.Bar(style=custom_style, x_label_rotation=50)
             uah_chart.title = 'Currency UAH, billion'
             years = list(set(uah_in.keys()).union(set(uah_out.keys())))
-            years = [x for x in years if x > 2008]
+            years = [x for x in years if x > 2011]
             years.sort()
             data_in = []
             data_out = []
@@ -75,7 +75,7 @@ def auctions_stat():
             uah_chart.x_labels = map(str, years)
             uah_chart.add('In', data_in)
             uah_chart.add('Out', data_out)
-            uah_chart.render_to_file(path_to_report + 'svg_report_uah.svg')
+            uah_chart.render_to_file(path_to_report + 'report_stat_uah.svg')
         if usd_in or usd_out:
             usd_chart = pygal.Bar(style=custom_style)
             usd_chart.title = 'Currency USD, million'
@@ -95,7 +95,7 @@ def auctions_stat():
             usd_chart.x_labels = map(str, years)
             usd_chart.add('In', data_in)
             usd_chart.add('Out', data_out)
-            usd_chart.render_to_file(path_to_report + 'svg_report_usd.svg')
+            usd_chart.render_to_file(path_to_report + 'report_stat_usd.svg')
         if eur_in or eur_out:
             eur_chart = pygal.Bar(style=custom_style)
             eur_chart.title = 'Currency EUR, million'
@@ -115,7 +115,7 @@ def auctions_stat():
             eur_chart.x_labels = map(str, years)
             eur_chart.add('In', data_in)
             eur_chart.add('Out', data_out)
-            eur_chart.render_to_file(path_to_report + 'svg_report_eur.svg')
+            eur_chart.render_to_file(path_to_report + 'report_stat_eur.svg')
         # Выводим сообщение о том, что всё готово
         return "auctions_stat(): The report is ready."
     else:
@@ -186,7 +186,7 @@ def auctions_year(check_year=None):
                 uah_chart.x_labels = map(str, months)
                 uah_chart.add('In', data_in)
                 uah_chart.add('Out', data_out)
-                uah_chart.render_to_file(path_to_report + 'svg_year_uah.svg')
+                uah_chart.render_to_file(path_to_report + 'report_' + str(check_year) + '_uah.svg')
             if usd_in or usd_out:
                 usd_chart = pygal.Bar(style=custom_style)
                 usd_chart.title = 'Year: {} - Currency USD, million'.format(check_year)
@@ -204,7 +204,7 @@ def auctions_year(check_year=None):
                 usd_chart.x_labels = map(str, months)
                 usd_chart.add('In', data_in)
                 usd_chart.add('Out', data_out)
-                usd_chart.render_to_file(path_to_report + 'svg_year_usd.svg')
+                usd_chart.render_to_file(path_to_report + 'report_' + str(check_year) + '_usd.svg')
             if eur_in or eur_out:
                 eur_chart = pygal.Bar(style=custom_style)
                 eur_chart.title = 'Year: {} - Currency EUR, million'.format(check_year)
@@ -222,7 +222,7 @@ def auctions_year(check_year=None):
                 eur_chart.x_labels = map(str, months)
                 eur_chart.add('In', data_in)
                 eur_chart.add('Out', data_out)
-                eur_chart.render_to_file(path_to_report + 'svg_year_eur.svg')
+                eur_chart.render_to_file(path_to_report + 'report_' + str(check_year) + '_eur.svg')
 
             # Выводим сообщение о том, что всё готово
             return "auctions_year(): The report is ready."

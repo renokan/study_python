@@ -12,7 +12,7 @@
                 <div class="card m-2 shadow rounded-0" style="min-width: 250px;">
                     <div class="card-header">{{ x['auctionnum'] }}</div>
                     <div class="card-body">
-                        <p class="card-text">{{ x['paydate'] }}</p>
+                        <p class="card-text">{{ x['auctiondate'] }}</p>
                         <p class="card-text">{{ x['incomelevel'] | round(1) }}%</p>
                         <p class="card-text">{{ x['attraction'] | money_format }} <strong>{{ x['valcode'] }}</strong></p>
                         <p class="card-text">{{ x['repaydate'] }}</p>

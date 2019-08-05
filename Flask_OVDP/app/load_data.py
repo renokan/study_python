@@ -1,6 +1,16 @@
-#!/home/renokan/flask-ovdp/venv/bin/python3
-"""Load data for flask_ovdp."""
+#!/home/renokan/flask-ovdp/venv/bin/python
 
+"""load_data.py file for updating data (start by cron).
+
+What are we doing in this program:
+    1. We download data from an external source and save it in a json file.
+    2. We read the data from the file. Check the correctness of the data and
+       write to the dictionary.
+    3. We calculate the necessary data on the general statistics of auctions.
+    4. We calculate the necessary data on the statistics of auctions
+       for the selected year.
+We save in the log file what we get from the function as an answer.
+"""
 import os
 import json
 import requests
@@ -20,7 +30,7 @@ info_auctions = {}
 
 
 def save_log(logging=None):
-    """Saving log."""
+    """We save in the log file what we get from the function as an answer."""
     if logging:
         with open(path_to_log, 'a', encoding='utf-8') as data_log:
             dtime = datetime.today().strftime('%d-%m-%Y %H:%M')
@@ -28,7 +38,7 @@ def save_log(logging=None):
 
 
 def load_data():
-    """Loading data."""
+    """We download data from an external source and save it in a json file."""
     try:
         request_get = requests.get('https://bank.gov.ua/NBUStatService/v1/statdirectory/ovdp?json')
     except requests.exceptions.RequestException:
@@ -44,7 +54,7 @@ def load_data():
 
 
 def convert_data():
-    """Converting data."""
+    """We read the data from the file. Check the correctness of the data and write to the dictionary."""
     try:
         data = json.load(open(path_to_json, encoding='utf-8'))
     except Exception:
@@ -61,7 +71,7 @@ def convert_data():
 
 
 def auctions_stat():
-    """General auction statistics."""
+    """We calculate the necessary data on the general statistics of auctions."""
     uah_in = {}
     uah_out = {}
     usd_in = {}
@@ -164,7 +174,7 @@ def auctions_stat():
 
 
 def auctions_year(check_year=None):
-    """Auction statistics for the year."""
+    """We calculate the necessary data on the statistics of auctions for the selected year."""
     if check_year:
         uah_in = {}
         uah_out = {}

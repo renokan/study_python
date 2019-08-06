@@ -25,6 +25,7 @@ path_to_app = os.path.dirname(os.path.realpath(__file__)) + os.sep
 path_to_log = path_to_app + 'update_data.log'
 path_to_json = path_to_app + 'db_auctions.json'
 path_to_report = path_to_app + 'static' + os.sep + 'reports' + os.sep
+url_to_json = 'https://bank.gov.ua/NBUStatService/v1/statdirectory/ovdp?json'
 
 info_auctions = {}
 
@@ -37,10 +38,20 @@ def save_log(logging=None):
             data_log.write('\n' + dtime + '\t' + logging)
 
 
+def check_data():
+    """We check the data for availability."""
+    try:
+        request_get = requests.get(url_to_json, timeout=1)
+    except requests.exceptions.RequestException as error_r:
+        return error_r
+    else:
+        return request_get.status_code
+
+
 def load_data():
     """We download data from an external source and save it in a json file."""
     try:
-        request_get = requests.get('https://bank.gov.ua/NBUStatService/v1/statdirectory/ovdp?json')
+        request_get = requests.get(url_to_json)
     except requests.exceptions.RequestException:
         return "load_data(): Error loading data from bank.gov.ua source."
     else:
@@ -50,7 +61,7 @@ def load_data():
         except Exception:
             return "load_data(): Error opening or writing to db_auctions.json file."
         else:
-            return "load_data(): Download to db_auctions.json completed."
+            return 200
 
 
 def convert_data():
@@ -65,7 +76,8 @@ def convert_data():
                 auct_year = int(data[i]['auctiondate'].split(".")[2])
                 auct_num = data[i]['auctionnum']
                 info_auctions[(auct_year, auct_num)] = data[i]
-            return "convert_data(): Converting data from the db_auctions.json file is complete."
+
+            return 200
         else:
             return "convert_data(): Error converting from local file. No key='auctiondate'."
 
@@ -168,7 +180,7 @@ def auctions_stat():
             eur_chart.add('Out', data_out)
             eur_chart.render_to_file(path_to_report + 'report_stat_eur.svg')
 
-        return "auctions_stat(): The report is ready."
+        return "The report auctions_stat is ready."
     else:
         return "auctions_stat(): No data."
 
@@ -274,7 +286,7 @@ def auctions_year(check_year=None):
                 eur_chart.add('Out', data_out)
                 eur_chart.render_to_file(path_to_report + 'report_' + str(check_year) + '_eur.svg')
 
-            return "auctions_year(): The report is ready."
+            return "The report auctions_year is ready."
         else:
             return "auctions_year(): For this parameter '{}' - no data.".format(check_year)
     else:
@@ -282,7 +294,21 @@ def auctions_year(check_year=None):
 
 
 if __name__ == '__main__':
-    save_log(load_data())
-    save_log(convert_data())
-    save_log(auctions_stat())
-    save_log(auctions_year(2019))
+    check = check_data()
+    if check:
+        if check == 200:
+            check = load_data()
+            if check == 200:
+                check = convert_data()
+                if check == 200:
+                    save_log("Download and update db is completed.")
+                    save_log(auctions_stat())
+                    save_log(auctions_year(2019))
+                else:
+                    save_log("convert_data(): " + check)
+            else:
+                save_log("check_data(): " + check)
+        else:
+            save_log("check_data(): The response from the server is ".format(str(check)))
+    else:
+        save_log("check_data(): No response from server.")

@@ -51,7 +51,7 @@ def check_data():
 def load_data():
     """We download data from an external source and save it in a json file."""
     try:
-        request_get = requests.get(url_to_json)
+        request_get = requests.get(url_to_json, timeout=5)
     except requests.exceptions.RequestException:
         return "load_data(): Error loading data from bank.gov.ua source."
     else:

@@ -88,6 +88,16 @@ def get_valcode(conn):
     return [x[0] for x in get_from_db(conn, get_valcode)]
 
 
+def show_result(title, val_code, data):
+    """Print data."""
+    print("{:6} {:<6} {}, {}".format(title, 'Count', 'Money', val_code))
+    print("{:6} {:<6} {}".format('-' * 4, '-' * 5, '-' * 10))
+    for row in data:
+        period, count, money = row
+        print("{:6} {:^6} {}".format(period, count, round(money, 2)))
+    print()
+
+
 def auctions_stats(conn, in_out):
     """We make a report on all auctions."""
     dic_in_out = {'in': 'date_start',
@@ -100,13 +110,14 @@ def auctions_stats(conn, in_out):
                                 ORDER BY year ASC;".format(dic_in_out.get(in_out))
     if in_out in dic_in_out.keys():
         print("\n=== Money {} ===".format(in_out.upper()))
-        for val in get_valcode(conn):
-            print()
-            print("{:6} {:<6} {}, {}".format('Year', 'Count', 'Money', val))
-            print("{:6} {:<6} {}".format('-' * 4, '-' * 5, '-' * 10))
-            for row in get_from_db(conn, get_stats, (val, )):
+        print()
+        for val_code in get_valcode(conn):
+            data = []
+            for row in get_from_db(conn, get_stats, (val_code, )):
                 if int(row[0]) > 2011:
-                    print("{:6} {:<6} {}".format(row[0], row[1], round(row[2], 2)))
+                    data.append(row)
+
+            show_result('Year', val_code, data)
 
 
 def auctions_year(conn, year, in_out):
@@ -123,21 +134,20 @@ def auctions_year(conn, year, in_out):
                                 GROUP BY month \
                                 ORDER BY month ASC;".format(dic_in_out.get(in_out))
     if in_out in dic_in_out.keys():
-        print("\n=== Money {} / Year: {} ===".format(in_out.upper(), year))
-        for val in get_valcode(conn):
-            # answer = get_from_db(conn, get_stats, (val, ))
-            print()
-            print("{:6} {:<6} {}, {}".format('Month', 'Count', 'Money', val))
-            print("{:6} {:<6} {}".format('-' * 5, '-' * 5, '-' * 10))
+        print("\n= Money {} / Year: {} =".format(in_out.upper(), year))
+        print()
+        for val_code in get_valcode(conn):
+            data = []
             months = [x[0] for x in get_from_db(conn, get_months)]
             for month in months:
                 x = str(year) + '-' + month + '-__'
-                answer = get_from_db(conn, get_stats, (val, x))
+                answer = get_from_db(conn, get_stats, (val_code, x))
                 if answer:
-                    month, count, money = answer[0]
-                    print("{:^6} {:^6} {}".format(month, count, round(money, 2)))
+                    data.append(answer[0])
                 else:
-                    print("{:^6} {:^6} {}".format(month, 0, 0))
+                    data.append((month, 0, 0))
+
+            show_result('Month', val_code, data)
 
 
 if __name__ == '__main__':
@@ -148,6 +158,6 @@ if __name__ == '__main__':
         if os.path.exists(data_file):
             insert_data(conn, data_file)
         # auctions_stats(conn, in_out='in')
-        # auctions_stats(conn, in_out='out')
+        auctions_stats(conn, in_out='out')
         auctions_year(conn, 2018, in_out='in')
         conn.close()

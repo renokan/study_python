@@ -101,10 +101,10 @@ def auctions_stats(conn, in_out):
     if in_out in dic_in_out.keys():
         print("\n=== Money {} ===".format(in_out.upper()))
         for val in get_valcode(conn):
-            answer = get_from_db(conn, get_stats, (val, ))
-            print("\n{:6} {:<6} {}, {}".format('Year', 'Count', 'Money', val))
+            print()
+            print("{:6} {:<6} {}, {}".format('Year', 'Count', 'Money', val))
             print("{:6} {:<6} {}".format('-' * 4, '-' * 5, '-' * 10))
-            for row in answer:
+            for row in get_from_db(conn, get_stats, (val, )):
                 if int(row[0]) > 2011:
                     print("{:6} {:<6} {}".format(row[0], row[1], round(row[2], 2)))
 
@@ -114,19 +114,30 @@ def auctions_year(conn, year, in_out):
     dic_in_out = {'in': 'date_start',
                   'out': 'date_end'
                   }
+    get_months = "SELECT strftime('%m', date_start) as month FROM auctions \
+                                GROUP BY month \
+                                ORDER BY month ASC;"
     get_stats = "SELECT strftime('%m', {0}) as month, COUNT(), SUM(money) \
                                 FROM auctions \
-                                WHERE val_code = ? AND {0} LIKE '{1}-__-__' \
+                                WHERE val_code = ? AND {0} LIKE ? \
                                 GROUP BY month \
-                                ORDER BY month ASC;".format(dic_in_out.get(in_out), str(year))
+                                ORDER BY month ASC;".format(dic_in_out.get(in_out))
     if in_out in dic_in_out.keys():
-        print("\n=== Money {} ===".format(in_out.upper()))
+        print("\n=== Money {} / Year: {} ===".format(in_out.upper(), year))
         for val in get_valcode(conn):
-            answer = get_from_db(conn, get_stats, (val, ))
-            print("\n{:6} {:<6} {}, {}".format('Month', 'Count', 'Money', val))
+            # answer = get_from_db(conn, get_stats, (val, ))
+            print()
+            print("{:6} {:<6} {}, {}".format('Month', 'Count', 'Money', val))
             print("{:6} {:<6} {}".format('-' * 5, '-' * 5, '-' * 10))
-            for row in answer:
-                print("{:6} {:<6} {}".format(row[0], row[1], round(row[2], 2)))
+            months = [x[0] for x in get_from_db(conn, get_months)]
+            for month in months:
+                x = str(year) + '-' + month + '-__'
+                answer = get_from_db(conn, get_stats, (val, x))
+                if answer:
+                    month, count, money = answer[0]
+                    print("{:^6} {:^6} {}".format(month, count, round(money, 2)))
+                else:
+                    print("{:^6} {:^6} {}".format(month, 0, 0))
 
 
 if __name__ == '__main__':

@@ -140,8 +140,9 @@ def auctions_year(conn, year, in_out):
             data = []
             months = [x[0] for x in get_from_db(conn, get_months)]
             for month in months:
-                x = str(year) + '-' + month + '-__'
-                answer = get_from_db(conn, get_stats, (val_code, x))
+                # Format date '2019-08-__' for sql query LIKE
+                date_search = '-'.join((str(year), month, '__'))
+                answer = get_from_db(conn, get_stats, (val_code, date_search))
                 if answer:
                     data.append(answer[0])
                 else:

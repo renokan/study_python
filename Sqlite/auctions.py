@@ -23,13 +23,11 @@ def get_data(path_to_data):
             result = []
             for i in range(len(data)):
                 if data[i]['attraction'] > 0:
+                    auct_num = int(data[i]['auctionnum'])
                     auctiondate = data[i]['auctiondate'].split(".")
                     # Convert date to desired (for strftime) format
                     # 24.03.2021 -> 2021-03-24
                     date_in = "-".join(auctiondate[::-1])
-                    # PRIMARY KEY -> auct_year, auct_num
-                    auct_year = int(auctiondate[2])
-                    auct_num = int(data[i]['auctionnum'])
                     repaydate = data[i]['repaydate'].split(".")
                     # Convert date to desired (for strftime) format
                     date_out = "-".join(repaydate[::-1])
@@ -38,7 +36,7 @@ def get_data(path_to_data):
                     val_code = data[i]['valcode'].strip()
                     stock_code = data[i]['stockcode'].strip()
                     # Collect data in a tuple.
-                    row_data = (auct_year, auct_num, date_in, date_out,
+                    row_data = (auct_num, date_in, date_out,
                                 money, percent, val_code, stock_code
                                 )
                     result.append(row_data)
@@ -49,7 +47,6 @@ def get_connect(db_file):
     """Get connect to the database."""
     db_schema = """
         CREATE TABLE IF NOT EXISTS auctions (
-            auct_year   integer not NULL,
             auct_num    integer not NULL,
             date_in     text not NULL,
             date_out    text not NULL,
@@ -57,7 +54,7 @@ def get_connect(db_file):
             percent     real not NULL,
             val_code    text not NULL,
             stock_code  text not NULL,
-            PRIMARY KEY (auct_year, auct_num)
+            PRIMARY KEY (auct_num, date_in)
         );
     """
     if os.path.exists(db_file):
@@ -68,15 +65,15 @@ def get_connect(db_file):
 
 def insert_data(conn, data_file):
     """We connect to the database and record data."""
-    check_data = "SELECT * FROM auctions WHERE auct_year = ? AND auct_num = ?;"
-    insert_data = "INSERT INTO auctions (auct_year, auct_num, \
-                                            date_in, date_out, money, percent, \
-                                            val_code, stock_code) \
-                                           VALUES (?, ?, ?, ?, ?, ?, ?, ?);"
+    check_data = "SELECT * FROM auctions WHERE auct_num = ? AND date_in = ?;"
+    insert_data = "INSERT INTO auctions (auct_num, date_in, date_out, money, \
+                                            percent, val_code, stock_code) \
+                                         VALUES (?, ?, ?, ?, ?, ?, ?);"
     data = get_data(data_file)
     if data:
         for row in data:
-            id_exists = get_from_db(conn, check_data, (row[1], row[2]))
+            # Check in db -> (auct_num, date_in)
+            id_exists = get_from_db(conn, check_data, (row[0], row[1]))
             if not id_exists:
                 insert_row_data(conn, insert_data, row)
         if conn.total_changes:
@@ -131,7 +128,8 @@ def auctions_stats(conn, in_out):
         for val_code in get_valcode(conn):
             data = []
             for row in get_from_db(conn, get_stats, (val_code, )):
-                if int(row[0]) > 2011:
+                year = int(row[0])
+                if year > 2011:
                     data.append(row)
             show_result('Year', val_code, data)
     else:

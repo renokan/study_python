@@ -37,6 +37,7 @@ def get_data(path_to_data):
                     percent = data[i]['incomelevel']
                     val_code = data[i]['valcode'].strip()
                     stock_code = data[i]['stockcode'].strip()
+                    # Collect data in a tuple.
                     row_data = (auct_year, auct_num, date_in, date_out,
                                 money, percent, val_code, stock_code
                                 )
@@ -77,7 +78,11 @@ def insert_data(conn, data_file):
                 insert_row_data(conn, insert_data, row)
         if conn.total_changes:
             conn.commit()
-        print("\nRows in data: {0}.\nTotal changes: {1}\n".format(len(data), conn.total_changes))
+            # Print the result.
+            print()
+            print("Rows in data: {}".format(len(data)))
+            print("Total changes: {}".format(conn.total_changes))
+            print()
 
 
 def get_valcode(conn):
@@ -116,7 +121,6 @@ def auctions_stats(conn, in_out):
             for row in get_from_db(conn, get_stats, (val_code, )):
                 if int(row[0]) > 2011:
                     data.append(row)
-
             show_result('Year', val_code, data)
 
 
@@ -147,7 +151,6 @@ def auctions_year(conn, year, in_out):
                     data.append(answer[0])
                 else:
                     data.append((month, 0, 0))
-
             show_result('Month', val_code, data)
 
 
@@ -158,7 +161,8 @@ if __name__ == '__main__':
     if conn:
         if os.path.exists(data_file):
             insert_data(conn, data_file)
-        # auctions_stats(conn, in_out='in')
+        auctions_stats(conn, in_out='in')
         auctions_stats(conn, in_out='out')
         auctions_year(conn, 2018, in_out='in')
+        auctions_year(conn, 2018, in_out='out')
         conn.close()

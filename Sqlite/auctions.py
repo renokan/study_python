@@ -94,7 +94,7 @@ def get_valcode(conn):
 
 
 def get_date_inout(in_out_key):
-    """Get a dataset data_(in/out)."""
+    """Get a dataset date_(in/out)."""
     in_out = {'in': 'date_in',
               'out': 'date_out'
               }

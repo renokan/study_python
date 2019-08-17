@@ -148,7 +148,8 @@ def auctions_year(conn, year, in_out):
                 date_search = '-'.join((str(year), month, '__'))
                 answer = get_from_db(conn, get_stats, (val_code, date_search))
                 if answer:
-                    data.append(answer[0])
+                    month, count, money = answer[0]
+                    data.append((month, count, money))
                 else:
                     data.append((month, 0, 0))
             show_result('Month', val_code, data)

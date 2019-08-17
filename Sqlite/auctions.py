@@ -93,6 +93,17 @@ def get_valcode(conn):
     return [x[0] for x in get_from_db(conn, get_valcode)]
 
 
+def get_date_inout(in_out_key):
+    """Get a dataset data_(in/out)."""
+    in_out = {'in': 'date_in',
+              'out': 'date_out'
+              }
+    if in_out_key in in_out.keys():
+        return in_out.get(in_out_key)
+    else:
+        return False
+
+
 def show_result(title, val_code, data):
     """Print data."""
     print("{:6} {:<6} {}, {}".format(title, 'Count', 'Money', val_code))
@@ -105,15 +116,13 @@ def show_result(title, val_code, data):
 
 def auctions_stats(conn, in_out):
     """We make a report on all auctions."""
-    dic_in_out = {'in': 'date_in',
-                  'out': 'date_out'
-                  }
+    date_field_inout = get_date_inout(in_out)
     get_stats = "SELECT strftime('%Y', {}) as year, COUNT(), SUM(money) \
                                 FROM auctions \
                                 WHERE val_code = ? \
                                 GROUP BY year \
-                                ORDER BY year ASC;".format(dic_in_out.get(in_out))
-    if in_out in dic_in_out.keys():
+                                ORDER BY year ASC;".format(date_field_inout)
+    if date_field_inout:
         print("\n=== Money {} ===".format(in_out.upper()))
         print()
         for val_code in get_valcode(conn):
@@ -122,13 +131,13 @@ def auctions_stats(conn, in_out):
                 if int(row[0]) > 2011:
                     data.append(row)
             show_result('Year', val_code, data)
+    else:
+        print("Invalid parameter '{}' in function 'auctions_stats()'.".format(in_out))
 
 
 def auctions_year(conn, year, in_out):
     """We draw up an auction report for the year."""
-    dic_in_out = {'in': 'date_in',
-                  'out': 'date_out'
-                  }
+    date_field_inout = get_date_inout(in_out)
     get_months = "SELECT strftime('%m', date_in) as month FROM auctions \
                                 GROUP BY month \
                                 ORDER BY month ASC;"
@@ -136,8 +145,8 @@ def auctions_year(conn, year, in_out):
                                 FROM auctions \
                                 WHERE val_code = ? AND {0} LIKE ? \
                                 GROUP BY month \
-                                ORDER BY month ASC;".format(dic_in_out.get(in_out))
-    if in_out in dic_in_out.keys():
+                                ORDER BY month ASC;".format(date_field_inout)
+    if date_field_inout:
         print("\n= Money {} / Year: {} =".format(in_out.upper(), year))
         print()
         for val_code in get_valcode(conn):
@@ -153,6 +162,8 @@ def auctions_year(conn, year, in_out):
                 else:
                     data.append((month, 0, 0))
             show_result('Month', val_code, data)
+    else:
+        print("Invalid parameter '{}' in function 'auctions_year()'.".format(in_out))
 
 
 if __name__ == '__main__':

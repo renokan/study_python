@@ -26,18 +26,18 @@ def get_data(path_to_data):
                     auctiondate = data[i]['auctiondate'].split(".")
                     # Convert date to desired (for strftime) format
                     # 24.03.2021 -> 2021-03-24
-                    date_start = "-".join(auctiondate[::-1])
-                    # PRIMARY KEY -> start_year, auct_num
-                    start_year = int(auctiondate[2])
+                    date_in = "-".join(auctiondate[::-1])
+                    # PRIMARY KEY -> auct_year, auct_num
+                    auct_year = int(auctiondate[2])
                     auct_num = int(data[i]['auctionnum'])
                     repaydate = data[i]['repaydate'].split(".")
                     # Convert date to desired (for strftime) format
-                    date_end = "-".join(repaydate[::-1])
+                    date_out = "-".join(repaydate[::-1])
                     money = data[i]['attraction']
                     percent = data[i]['incomelevel']
                     val_code = data[i]['valcode'].strip()
                     stock_code = data[i]['stockcode'].strip()
-                    row_data = (start_year, auct_num, date_start, date_end,
+                    row_data = (auct_year, auct_num, date_in, date_out,
                                 money, percent, val_code, stock_code
                                 )
                     result.append(row_data)
@@ -48,15 +48,15 @@ def get_connect(db_file):
     """Get connect to the database."""
     db_schema = """
         CREATE TABLE IF NOT EXISTS auctions (
-            start_year  integer not NULL,
+            auct_year   integer not NULL,
             auct_num    integer not NULL,
-            date_start  text not NULL,
-            date_end    text not NULL,
+            date_in     text not NULL,
+            date_out    text not NULL,
             money       real not NULL,
             percent     real not NULL,
             val_code    text not NULL,
             stock_code  text not NULL,
-            PRIMARY KEY (start_year, auct_num)
+            PRIMARY KEY (auct_year, auct_num)
         );
     """
     return create_connection(db_file, db_schema)
@@ -64,9 +64,9 @@ def get_connect(db_file):
 
 def insert_data(conn, data_file):
     """We connect to the database and record data."""
-    check_data = "SELECT * FROM auctions WHERE start_year = ? AND auct_num = ?;"
-    insert_data = "INSERT INTO auctions (start_year, auct_num, \
-                                            date_start, date_end, money, percent, \
+    check_data = "SELECT * FROM auctions WHERE auct_year = ? AND auct_num = ?;"
+    insert_data = "INSERT INTO auctions (auct_year, auct_num, \
+                                            date_in, date_out, money, percent, \
                                             val_code, stock_code) \
                                            VALUES (?, ?, ?, ?, ?, ?, ?, ?);"
     data = get_data(data_file)
@@ -100,8 +100,8 @@ def show_result(title, val_code, data):
 
 def auctions_stats(conn, in_out):
     """We make a report on all auctions."""
-    dic_in_out = {'in': 'date_start',
-                  'out': 'date_end'
+    dic_in_out = {'in': 'date_in',
+                  'out': 'date_out'
                   }
     get_stats = "SELECT strftime('%Y', {}) as year, COUNT(), SUM(money) \
                                 FROM auctions \
@@ -122,10 +122,10 @@ def auctions_stats(conn, in_out):
 
 def auctions_year(conn, year, in_out):
     """We draw up an auction report for the year."""
-    dic_in_out = {'in': 'date_start',
-                  'out': 'date_end'
+    dic_in_out = {'in': 'date_in',
+                  'out': 'date_out'
                   }
-    get_months = "SELECT strftime('%m', date_start) as month FROM auctions \
+    get_months = "SELECT strftime('%m', date_in) as month FROM auctions \
                                 GROUP BY month \
                                 ORDER BY month ASC;"
     get_stats = "SELECT strftime('%m', {0}) as month, COUNT(), SUM(money) \

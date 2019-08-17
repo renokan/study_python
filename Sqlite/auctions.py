@@ -60,7 +60,10 @@ def get_connect(db_file):
             PRIMARY KEY (auct_year, auct_num)
         );
     """
-    return create_connection(db_file, db_schema)
+    if os.path.exists(db_file):
+        return create_connection(db_file)
+    else:
+        return create_connection(db_file, db_schema)
 
 
 def insert_data(conn, data_file):

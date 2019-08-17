@@ -1,16 +1,11 @@
 """Utilits for sqlite3."""
-
 import sqlite3
-import os
 
 
 def create_connection(path_to_db, schema_db=None):
-    db_exists = os.path.exists(path_to_db)
     connection = sqlite3.connect(path_to_db)
-
-    if not db_exists:
+    if schema_db:
         connection.executescript(schema_db)
-
     return connection
 
 

@@ -18,3 +18,7 @@
 
 + **Flask_OVDP/** - Сайт по ОВГЗ (фреймворк Flask)
   + **app/** - *app.py + db_auctions.json + tempaltes/ + static/*
+
++ **Sqlite/** - Тестируем модуль sqlite3
+  + **utils.py** - *утилиты для работы с базой данных*
+  + **auctions.py** - *программа для создания, наполнения и работы с базой данных*

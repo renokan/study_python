@@ -12,7 +12,7 @@ import json
 path_to_app = os.path.dirname(os.path.realpath(__file__)) + os.sep
 data_file = path_to_app + 'auctions.json'
 db_file = path_to_app + 'auctions.db'
-save_report = [False, path_to_app + 'report.txt']
+save_report = [False, path_to_app + 'auctions.txt']
 
 
 def show_report(data=None, mode_open='a'):
@@ -191,6 +191,14 @@ def auctions_year(conn, year, in_out):
         show_report("Invalid parameter '{}' in function 'auctions_year()'.".format(in_out))
 
 
+def auctions_all(conn):
+    """We get all the records."""
+    get_all = "SELECT * FROM auctions ORDER BY date_in DESC;"
+    for row in get_from_db(conn, get_all):
+        show_report(row)
+
+
+
 def auctions_report(conn, to_save=False):
     """We prepare reports."""
     if to_save is True:
@@ -201,10 +209,11 @@ def auctions_report(conn, to_save=False):
             print(answer)
             return False
 
-    auctions_stats(conn, in_out='in')
-    auctions_stats(conn, in_out='out')
-    auctions_year(conn, 2018, in_out='in')
-    auctions_year(conn, 2018, in_out='out')
+    # auctions_stats(conn, in_out='in')
+    # auctions_stats(conn, in_out='out')
+    # auctions_year(conn, 2018, in_out='in')
+    # auctions_year(conn, 2018, in_out='out')
+    auctions_all(conn)
 
 
 if __name__ == '__main__':

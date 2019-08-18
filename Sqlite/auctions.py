@@ -199,6 +199,8 @@ def auctions_report(conn, to_save=False):
         if answer is not True:
             save_report[0] = False
             print(answer)
+            return False
+
     auctions_stats(conn, in_out='in')
     auctions_stats(conn, in_out='out')
     auctions_year(conn, 2018, in_out='in')

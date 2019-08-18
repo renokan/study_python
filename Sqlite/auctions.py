@@ -10,6 +10,30 @@ import json
 
 
 path_to_app = os.path.dirname(os.path.realpath(__file__)) + os.sep
+data_file = path_to_app + 'auctions.json'
+db_file = path_to_app + 'auctions.db'
+save_report = [False, path_to_app + 'report.txt']
+
+
+def show_report(data=None, mode_open='a'):
+    """We display or save a report."""
+    if save_report[0] is True:
+        path_to_report = save_report[1]
+        try:
+            with open(path_to_report, mode_open, encoding='utf-8') as report:
+                if data:
+                    report.write(data + "\n")
+                else:
+                    report.write("\n")
+        except Exception as err:
+            return "Open/Write Error: {}".format(err)
+        else:
+            return True
+    else:
+        if data:
+            print(data)
+        else:
+            print()
 
 
 def get_data(path_to_data):
@@ -17,7 +41,7 @@ def get_data(path_to_data):
     try:
         data = json.load(open(path_to_data, encoding='utf-8'))
     except Exception as err_load:
-        print("Error json_load: ", err_load)
+        show_report("Error json_load: ", err_load)
     else:
         if data[0].get('auctiondate'):
             result = []
@@ -78,11 +102,11 @@ def insert_data(conn, data_file):
                 insert_row_data(conn, insert_data, row)
         if conn.total_changes:
             conn.commit()
-            # Print the result.
-            print()
-            print("Rows in data: {}".format(len(data)))
-            print("Total changes: {}".format(conn.total_changes))
-            print()
+            # show_report the result.
+            show_report()
+            show_report("Rows in data: {}".format(len(data)))
+            show_report("Total changes: {}".format(conn.total_changes))
+            show_report()
 
 
 def get_valcode(conn):
@@ -105,13 +129,13 @@ def get_date_inout(in_out_key):
 
 
 def show_result(title, val_code, data):
-    """Print data."""
-    print("{:6} {:<6} {}, {}".format(title, 'Count', 'Money', val_code))
-    print("{:6} {:<6} {}".format('-' * 4, '-' * 5, '-' * 10))
+    """show_report data."""
+    show_report("{:6} {:<6} {}, {}".format(title, 'Count', 'Money', val_code))
+    show_report("{:6} {:<6} {}".format('-' * 4, '-' * 5, '-' * 10))
     for row in data:
         period, count, money = row
-        print("{:6} {:^6} {}".format(period, count, round(money, 2)))
-    print()
+        show_report("{:6} {:^6} {}".format(period, count, round(money, 2)))
+    show_report()
 
 
 def auctions_stats(conn, in_out):
@@ -123,8 +147,8 @@ def auctions_stats(conn, in_out):
                                 GROUP BY year \
                                 ORDER BY year ASC;".format(date_field_inout)
     if date_field_inout:
-        print("\n=== Money {} ===".format(in_out.upper()))
-        print()
+        show_report("\n=== Money {} ===".format(in_out.upper()))
+        show_report()
         for val_code in get_valcode(conn):
             data = []
             for row in get_from_db(conn, get_stats, (val_code, )):
@@ -133,7 +157,7 @@ def auctions_stats(conn, in_out):
                     data.append(row)
             show_result('Year', val_code, data)
     else:
-        print("Invalid parameter '{}' in function 'auctions_stats()'.".format(in_out))
+        show_report("Invalid parameter '{}' in function 'auctions_stats()'.".format(in_out))
 
 
 def auctions_year(conn, year, in_out):
@@ -148,8 +172,8 @@ def auctions_year(conn, year, in_out):
                                 GROUP BY month \
                                 ORDER BY month ASC;".format(date_field_inout)
     if date_field_inout:
-        print("\n= Money {} / Year: {} =".format(in_out.upper(), year))
-        print()
+        show_report("\n= Money {} / Year: {} =".format(in_out.upper(), year))
+        show_report()
         for val_code in get_valcode(conn):
             data = []
             months = [x[0] for x in get_from_db(conn, get_months)]
@@ -164,18 +188,27 @@ def auctions_year(conn, year, in_out):
                     data.append((month, 0, 0))
             show_result('Month', val_code, data)
     else:
-        print("Invalid parameter '{}' in function 'auctions_year()'.".format(in_out))
+        show_report("Invalid parameter '{}' in function 'auctions_year()'.".format(in_out))
+
+
+def auctions_report(conn, to_save=False):
+    """We prepare reports."""
+    if to_save is True:
+        save_report[0] = True
+        answer = show_report(mode_open='w')  # cleared report file
+        if answer is not True:
+            save_report[0] = False
+            print(answer)
+    auctions_stats(conn, in_out='in')
+    auctions_stats(conn, in_out='out')
+    auctions_year(conn, 2018, in_out='in')
+    auctions_year(conn, 2018, in_out='out')
 
 
 if __name__ == '__main__':
-    data_file = path_to_app + 'auctions.json'
-    db_file = path_to_app + 'auctions.db'
     conn = get_connect(db_file)
     if conn:
         if os.path.exists(data_file):
             insert_data(conn, data_file)
-        auctions_stats(conn, in_out='in')
-        auctions_stats(conn, in_out='out')
-        auctions_year(conn, 2018, in_out='in')
-        auctions_year(conn, 2018, in_out='out')
+        auctions_report(conn)  # (conn, to_save=True)
         conn.close()

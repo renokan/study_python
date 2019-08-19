@@ -111,9 +111,8 @@ def insert_data(conn, data_file):
 
 def get_valcode(conn):
     """Get a dataset valcode: ['UAH', 'USD', 'EUR']."""
-    get_valcode = "SELECT val_code FROM auctions \
-                                GROUP BY val_code \
-                                ORDER BY val_code DESC;"
+    get_valcode = "SELECT DISTINCT val_code FROM auctions \
+                                            ORDER BY val_code DESC;"
     return [x[0] for x in get_from_db(conn, get_valcode)]
 
 
@@ -163,9 +162,9 @@ def auctions_stats(conn, in_out):
 def auctions_year(conn, year, in_out):
     """We draw up an auction report for the year."""
     date_field_inout = get_date_inout(in_out)
-    get_months = "SELECT strftime('%m', date_in) as month FROM auctions \
-                                GROUP BY month \
-                                ORDER BY month ASC;"
+    get_months = "SELECT DISTINCT strftime('%m', date_in) as month \
+                                                    FROM auctions \
+                                                    ORDER BY month ASC;"
     get_stats = "SELECT strftime('%m', {0}) as month, COUNT(), SUM(money) \
                                 FROM auctions \
                                 WHERE val_code = ? AND {0} LIKE ? \

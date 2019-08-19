@@ -8,11 +8,13 @@ from utils import create_connection, insert_row_data, get_from_db
 import os
 import json
 
+basedir = os.path.abspath(os.path.dirname(__file__))
 
-path_to_app = os.path.dirname(os.path.realpath(__file__)) + os.sep
-data_file = path_to_app + 'auctions.json'
-db_file = path_to_app + 'auctions.db'
-save_report = [False, path_to_app + 'auctions.txt']
+DATA_FILE = os.path.join(basedir, 'auctions.json')
+DB_FILE = os.path.join(basedir, 'auctions.db')
+REPORT_FILE = os.path.join(basedir, 'auctions.txt')
+
+save_report = [False, REPORT_FILE]
 
 
 def show_report(data=None, mode_open='a'):
@@ -216,9 +218,9 @@ def auctions_report(conn, to_save=False):
 
 
 if __name__ == '__main__':
-    conn = get_connect(db_file)
+    conn = get_connect(DB_FILE)
     if conn:
-        if os.path.exists(data_file):
-            insert_data(conn, data_file)
+        if os.path.exists(DATA_FILE):
+            insert_data(conn, DATA_FILE)
         auctions_report(conn)  # (conn, to_save=True)
         conn.close()

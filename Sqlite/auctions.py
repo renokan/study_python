@@ -49,7 +49,7 @@ def get_data(path_to_data):
             result = []
             for i in range(len(data)):
                 if data[i]['attraction'] > 0:
-                    auct_num = int(data[i]['auctionnum'])
+                    auct_num = data[i]['auctionnum']
                     auctiondate = data[i]['auctiondate'].split(".")
                     # Convert date to desired (for strftime) format
                     # 24.03.2021 -> 2021-03-24
@@ -153,9 +153,10 @@ def auctions_stats(conn, in_out):
         for val_code in get_valcode(conn):
             data = []
             for row in get_from_db(conn, get_stats, (val_code, )):
-                year = int(row[0])
-                if year > 2011:
-                    data.append(row)
+                year = row[0]  # string
+                if year.isdigit():
+                    if int(year) > 2011:
+                        data.append(row)
             show_result('Year', val_code, data)
     else:
         show_report("Invalid parameter '{}' in function 'auctions_stats()'.".format(in_out))

@@ -7,6 +7,7 @@ To do this, the data was loaded into the sqlite3 database.
 from utils import create_connection, insert_row_data, get_from_db
 import os
 import json
+import re
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -38,6 +39,21 @@ def show_report(data=None, mode_open='a'):
             print()
 
 
+def check_date(date_string):
+    """We check the date and change the format (for strftime) if necessary."""
+    if re.search(r'\d\d\d\d-\d\d-\d\d', date_string):
+        # 2021-03-24 -> Ok
+        return date_string
+    if re.search(r'\d\d\d\d\.\d\d\.\d\d', date_string):
+        # 2021.03.24 -> 2021-03-24 -> Ok
+        temp = date_string.split(".")
+        return "-".join(temp)
+    if re.search(r'\d\d\.\d\d\.\d\d\d\d', date_string):
+        # 24.03.2021 -> 2021-03-24 -> Ok
+        temp = date_string.split(".")
+        return "-".join(temp[::-1])
+
+
 def get_data(path_to_data):
     """We get data from json file."""
     try:
@@ -50,13 +66,8 @@ def get_data(path_to_data):
             for i in range(len(data)):
                 if data[i]['attraction'] > 0:
                     auct_num = data[i]['auctionnum']
-                    auctiondate = data[i]['auctiondate'].split(".")
-                    # Convert date to desired (for strftime) format
-                    # 24.03.2021 -> 2021-03-24
-                    date_in = "-".join(auctiondate[::-1])
-                    repaydate = data[i]['repaydate'].split(".")
-                    # Convert date to desired (for strftime) format
-                    date_out = "-".join(repaydate[::-1])
+                    date_in = check_date(data[i]['auctiondate'])
+                    date_out = check_date(data[i]['repaydate'])
                     money = data[i]['attraction']
                     percent = data[i]['incomelevel']
                     val_code = data[i]['valcode'].strip()

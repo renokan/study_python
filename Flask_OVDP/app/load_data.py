@@ -43,7 +43,7 @@ def check_data():
     try:
         request_get = requests.get(url_to_json, timeout=1)
     except requests.exceptions.RequestException as error_r:
-        return error_r
+        return str(error_r)
     else:
         return request_get.status_code
 
@@ -309,6 +309,6 @@ if __name__ == '__main__':
             else:
                 save_log("check_data(): " + check)
         else:
-            save_log("check_data(): The response from the server is ".format(str(check)))
+            save_log("check_data(): The response from the server is {}".format(check))
     else:
         save_log("check_data(): No response from server.")

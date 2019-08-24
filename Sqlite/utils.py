@@ -1,12 +1,20 @@
 """Utilits for sqlite3."""
+
 import sqlite3
 
 
-def create_connection(path_to_db, schema_db=None):
-    connection = sqlite3.connect(path_to_db)
-    if schema_db:
+def init_db(path_to_db, schema_db):
+    try:
+        connection = sqlite3.connect(path_to_db)
         connection.executescript(schema_db)
-    return connection
+    except sqlite3.DatabaseError as err:
+        return str(err)
+    else:
+        return True
+
+
+def create_connection(path_to_db):
+    return sqlite3.connect(path_to_db)
 
 
 def old_insert_row_data(connection, query, data):

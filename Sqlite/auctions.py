@@ -4,7 +4,7 @@ We analyze data from a json file using SQL queries.
 To do this, the data was loaded into the sqlite3 database.
 """
 
-from utils import create_connection, insert_row_data, get_from_db
+from utils import create_connection, insert_row_data, get_from_db, init_db
 import os
 import json
 import re
@@ -94,10 +94,11 @@ def get_connect(db_file):
             PRIMARY KEY (auct_num, date_in)
         );
     """
-    if os.path.exists(db_file):
-        return create_connection(db_file)
-    else:
-        return create_connection(db_file, db_schema)
+    if not os.path.exists(db_file):
+        result = init_db(db_file, db_schema)
+        if result is not True:
+            show_report("Database initialization error: {}".format(result))
+    return create_connection(db_file)
 
 
 def insert_data(conn, data_file):

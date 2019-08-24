@@ -29,7 +29,7 @@ def show_report(data=None, mode_open='a'):
                 else:
                     report.write("\n")
         except Exception as err:
-            return "Open/Write Error: {}".format(err)
+            return "Open/Write Error: {}".format(str(err))
         else:
             return True
     else:
@@ -59,7 +59,7 @@ def get_data(path_to_data):
     try:
         data = json.load(open(path_to_data, encoding='utf-8'))
     except Exception as err_load:
-        show_report("Error json_load: ", err_load)
+        show_report("Error json_load: ", str(err_load))
     else:
         if data[0].get('auctiondate'):
             result = []

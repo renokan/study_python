@@ -207,10 +207,43 @@ def auctions_year(conn, year, in_out):
 
 def auctions_all(conn):
     """We get all the records."""
-    get_all = "SELECT * FROM auctions ORDER BY date_in DESC;"
+    get_all = "SELECT * FROM auctions ORDER BY date_in DESC, auct_num DESC;"
     for row in get_from_db(conn, get_all):
         show_report(row)
 
+
+def auctions_paginated(conn):
+    """We get paginated reports."""
+    def paginate(item_all, item_qty, page=0):
+        slice_start = 0
+        slice_end = item_qty
+        pages = len(item_all[::item_qty])
+        for i in (range(pages)):
+            if page == i:
+                item_list = item_all[slice_start:slice_end]
+                return (item_list, pages, )
+            slice_start += item_qty
+            slice_end += item_qty
+
+    query = "SELECT * FROM auctions ORDER BY date_in DESC, auct_num DESC;"
+    cursor = conn.cursor()
+    cursor.execute(query)
+    item_all = cursor.fetchall()
+    item_qty = 5
+    page = 0
+    if not item_all:
+        print("Error 500")
+        return 500
+    if not isinstance(page, int):
+        print("Error 400")
+        return 400
+    pages = len(item_all[::item_qty])
+    if page < 0 or page > pages:
+        print("Error 404")
+        return 404
+    print("Code 200")
+    return 200
+    # print(paginate(item_all, item_qty, page))
 
 
 def auctions_report(conn, to_save=False):
@@ -227,7 +260,8 @@ def auctions_report(conn, to_save=False):
     # auctions_stats(conn, in_out='out')
     # auctions_year(conn, 2018, in_out='in')
     # auctions_year(conn, 2018, in_out='out')
-    auctions_all(conn)
+    # auctions_all(conn)
+    auctions_paginated(conn)
 
 
 if __name__ == '__main__':

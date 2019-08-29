@@ -15,15 +15,15 @@ DATA_FILE = os.path.join(basedir, 'auctions.json')
 DB_FILE = os.path.join(basedir, 'auctions.db')
 REPORT_FILE = os.path.join(basedir, 'auctions.txt')
 
-save_report = [False, REPORT_FILE]
+save_report = {'status': False,
+               'path': REPORT_FILE}
 
 
 def show_report(data=None, mode_open='a'):
     """We display or save a report."""
-    if save_report[0] is True:
-        path_to_report = save_report[1]
+    if save_report['status'] is True:
         try:
-            with open(path_to_report, mode_open, encoding='utf-8') as report:
+            with open(save_report['path'], mode_open, encoding='utf-8') as report:
                 if data:
                     report.write(data + "\n")
                 else:
@@ -224,26 +224,26 @@ def auctions_paginated(conn):
         if page < 1 or page > pages:
             raise ValueError
 
-        previous = None
-        next = None
+        page_prev = None
+        page_next = None
         slice_start = None
         slice_end = None
         if pages != 1:
             if page == 1:
-                next = page + 1
+                page_next = page + 1
                 slice_end = page * item_qty
             elif page == pages:
-                previous = page - 1
+                page_prev = page - 1
                 slice_start = ((page - 1) * item_qty)
             else:
-                previous = page - 1
-                next = page + 1
+                page_prev = page - 1
+                page_next = page + 1
                 slice_start = ((page - 1) * item_qty)
                 slice_end = (page * item_qty)
         data = item_all[slice_start:slice_end]
 
         output = {'page': page, 'pages': pages,
-                  'previous': previous, 'next': next,
+                  'previous': page_prev, 'next': page_next,
                   'data': data}
 
         return output
@@ -270,10 +270,10 @@ def auctions_paginated(conn):
 def auctions_report(conn, to_save=False):
     """We prepare reports."""
     if to_save is True:
-        save_report[0] = True
+        save_report['status'] = True
         answer = show_report(mode_open='w')  # cleared report file
         if answer is not True:
-            save_report[0] = False
+            save_report['status'] = False
             print(answer)
             return False
 

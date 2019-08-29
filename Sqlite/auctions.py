@@ -207,43 +207,64 @@ def auctions_year(conn, year, in_out):
 
 def auctions_all(conn):
     """We get all the records."""
-    get_all = "SELECT * FROM auctions ORDER BY date_in DESC, auct_num DESC;"
+    get_all = "SELECT * FROM auctions \
+                        WHERE CAST(strftime('%Y', date_in) as INTEGER) > 2011 \
+                        ORDER BY date_in DESC, auct_num DESC;"
     for row in get_from_db(conn, get_all):
         show_report(row)
 
 
 def auctions_paginated(conn):
     """We get paginated reports."""
-    def paginate(item_all, item_qty, page=0):
-        slice_start = 0
-        slice_end = item_qty
-        pages = len(item_all[::item_qty])
-        for i in (range(pages)):
-            if page == i:
-                item_list = item_all[slice_start:slice_end]
-                return (item_list, pages, )
-            slice_start += item_qty
-            slice_end += item_qty
+    def paginate(item_all, item_qty, page=1):
+        if not item_all:
+            raise ConnectionError
 
-    query = "SELECT * FROM auctions ORDER BY date_in DESC, auct_num DESC;"
-    cursor = conn.cursor()
-    cursor.execute(query)
-    item_all = cursor.fetchall()
-    item_qty = 5
-    page = 0
-    if not item_all:
-        print("Error 500")
-        return 500
-    if not isinstance(page, int):
-        print("Error 400")
-        return 400
-    pages = len(item_all[::item_qty])
-    if page < 0 or page > pages:
-        print("Error 404")
-        return 404
-    print("Code 200")
-    return 200
-    # print(paginate(item_all, item_qty, page))
+        pages = len(item_all[::item_qty])
+        if page < 1 or page > pages:
+            raise ValueError
+
+        previous = None
+        next = None
+        slice_start = None
+        slice_end = None
+        if pages != 1:
+            if page == 1:
+                next = page + 1
+                slice_end = page * item_qty
+            elif page == pages:
+                previous = page - 1
+                slice_start = ((page - 1) * item_qty)
+            else:
+                previous = page - 1
+                next = page + 1
+                slice_start = ((page - 1) * item_qty)
+                slice_end = (page * item_qty)
+        data = item_all[slice_start:slice_end]
+
+        output = {'page': page, 'pages': pages,
+                  'previous': previous, 'next': next,
+                  'data': data}
+
+        return output
+
+    query = "SELECT * FROM auctions \
+                      WHERE CAST(strftime('%Y', date_in) as INTEGER) > 2011 \
+                      ORDER BY date_in DESC, auct_num DESC;"
+    item_qty = 16
+    page = 1
+    try:
+        cursor = conn.cursor()
+        cursor.execute(query)
+        item_all = cursor.fetchall()
+        result = paginate(item_all, item_qty, page)
+    except ConnectionError:
+        print("No Items. Error 500.")
+    except ValueError:
+        print("Error param. Error 404.")
+    else:
+        print("Code 200.")
+        print(result)
 
 
 def auctions_report(conn, to_save=False):

@@ -93,7 +93,7 @@ def auctions():
             except Exception:
                 abort(404)
             else:
-                if page > pages or page < 0:
+                if page > pages or page < 1:
                     abort(404)
                 if page < pages:
                     next = page + 1

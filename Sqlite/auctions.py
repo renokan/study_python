@@ -110,8 +110,8 @@ def insert_data(conn, data_file):
     data = get_data(data_file)
     if data:
         for row in data:
-            # Check in db -> (auct_num, date_in)
-            id_exists = get_from_db(conn, check_data, (row[0], row[1]))
+            PRIMARY_KEY = slice(0, 2)
+            id_exists = get_from_db(conn, check_data, row[PRIMARY_KEY])
             if not id_exists:
                 insert_row_data(conn, insert_data, row)
         if conn.total_changes:
@@ -281,8 +281,8 @@ def auctions_report(conn, to_save=False):
     # auctions_stats(conn, in_out='out')
     # auctions_year(conn, 2018, in_out='in')
     # auctions_year(conn, 2018, in_out='out')
-    # auctions_all(conn)
-    auctions_paginated(conn)
+    auctions_all(conn)
+    # auctions_paginated(conn)
 
 
 if __name__ == '__main__':

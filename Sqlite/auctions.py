@@ -143,7 +143,7 @@ def show_result(title, val_code, data):
     for row in data:
         period, count, money = row
         money = round(money, 2)
-        show_report("{:6} {:^6} {}".format(period, count, money))
+        show_report("{:<6} {:^6} {}".format(period, count, money))
     show_report()
 
 
@@ -154,22 +154,20 @@ def auctions_stats(conn, in_out):
         show_report("Invalid parameter '{}' in function 'auctions_stats()'.".format(in_out))
         return False
 
-    get_stats = "SELECT strftime('%Y', {}) as year, COUNT(), SUM(money) \
-                                FROM auctions \
-                                WHERE val_code = ? \
-                                GROUP BY year \
-                                ORDER BY year ASC;".format(column_inout)
+    # We can't make a year selection in the request,
+    # because then the amount is erroneously calculated.
+    query = "SELECT CAST(strftime('%Y', {}) as INTEGER) as year, COUNT(), SUM(money) \
+                                    FROM auctions \
+                                    WHERE val_code = ? \
+                                    GROUP BY year \
+                                    ORDER BY year ASC;".format(column_inout)
 
     show_report("\n=== Money {} ===".format(in_out.upper()))
     show_report()
     for val_code in get_valcode(conn):
-        data = []
-        for row in get_from_db(conn, get_stats, (val_code, )):
-            year = row[0]  # string
-            if year.isdigit():
-                if int(year) > 2011:
-                    data.append(row)
-        show_result('Year', val_code, data)
+        data = get_from_db(conn, query, (val_code, ))
+        result = [row for row in data if row[0] > 2011]
+        show_result('Year', val_code, result)
 
 
 def auctions_year(conn, year, in_out):
@@ -278,7 +276,7 @@ def auctions_report(conn, to_save=False):
             return False
 
     auctions_stats(conn, in_out='in')
-    # auctions_stats(conn, in_out='out')
+    auctions_stats(conn, in_out='out')
     # auctions_year(conn, 2018, in_out='in')
     # auctions_year(conn, 2018, in_out='out')
     # auctions_all(conn)

@@ -154,8 +154,8 @@ def auctions_stats(conn, in_out):
         show_report("Invalid parameter '{}' in function 'auctions_stats()'.".format(in_out))
         return False
 
-    # We can't make a year selection in the request,
-    # because then the amount is erroneously calculated.
+    # We can't make a year selection "> 2011" in the request,
+    # because then the SUM(money) is erroneously calculated.
     query = "SELECT CAST(strftime('%Y', {}) as INTEGER) as year, COUNT(), SUM(money) \
                                     FROM auctions \
                                     WHERE val_code = ? \

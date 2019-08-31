@@ -4,7 +4,7 @@ We analyze data from a json file using SQL queries.
 To do this, the data was loaded into the sqlite3 database.
 """
 
-from utils import create_connection, insert_row_data, get_from_db, init_db
+from utils import create_connection, insert_in_db, get_from_db, init_db
 import os
 import json
 import re
@@ -74,8 +74,7 @@ def get_data(path_to_data):
                     stock_code = data[i]['stockcode'].strip()
                     # Collect data in a tuple.
                     row_data = (auct_num, date_in, date_out,
-                                money, percent, val_code, stock_code
-                                )
+                                money, percent, val_code, stock_code)
                     result.append(row_data)
             return result
 
@@ -109,11 +108,11 @@ def insert_data(conn, data_file):
                                          VALUES (?, ?, ?, ?, ?, ?, ?);"
     data = get_data(data_file)
     if data:
+        PRIMARY_KEY = slice(0, 2)
         for row in data:
-            PRIMARY_KEY = slice(0, 2)
             id_exists = get_from_db(conn, check_data, row[PRIMARY_KEY])
             if not id_exists:
-                insert_row_data(conn, insert_data, row)
+                insert_in_db(conn, insert_data, row)
         if conn.total_changes:
             conn.commit()
             # show_report the result.
@@ -133,50 +132,53 @@ def get_valcode(conn):
 def get_date_inout(in_out_key):
     """Get a dataset date_(in/out)."""
     in_out = {'in': 'date_in',
-              'out': 'date_out'
-              }
-    if in_out_key in in_out.keys():
-        return in_out.get(in_out_key)
-    else:
-        return False
+              'out': 'date_out'}
+    return in_out.get(in_out_key)
 
 
 def show_result(title, val_code, data):
-    """show_report data."""
+    """Show report data."""
     show_report("{:6} {:<6} {}, {}".format(title, 'Count', 'Money', val_code))
     show_report("{:6} {:<6} {}".format('-' * 4, '-' * 5, '-' * 10))
     for row in data:
         period, count, money = row
-        show_report("{:6} {:^6} {}".format(period, count, round(money, 2)))
+        money = round(money, 2)
+        show_report("{:6} {:^6} {}".format(period, count, money))
     show_report()
 
 
 def auctions_stats(conn, in_out):
     """We make a report on all auctions."""
-    date_field_inout = get_date_inout(in_out)
+    column_inout = get_date_inout(in_out)
+    if not column_inout:
+        show_report("Invalid parameter '{}' in function 'auctions_stats()'.".format(in_out))
+        return False
+
     get_stats = "SELECT strftime('%Y', {}) as year, COUNT(), SUM(money) \
                                 FROM auctions \
                                 WHERE val_code = ? \
                                 GROUP BY year \
-                                ORDER BY year ASC;".format(date_field_inout)
-    if date_field_inout:
-        show_report("\n=== Money {} ===".format(in_out.upper()))
-        show_report()
-        for val_code in get_valcode(conn):
-            data = []
-            for row in get_from_db(conn, get_stats, (val_code, )):
-                year = row[0]  # string
-                if year.isdigit():
-                    if int(year) > 2011:
-                        data.append(row)
-            show_result('Year', val_code, data)
-    else:
-        show_report("Invalid parameter '{}' in function 'auctions_stats()'.".format(in_out))
+                                ORDER BY year ASC;".format(column_inout)
+
+    show_report("\n=== Money {} ===".format(in_out.upper()))
+    show_report()
+    for val_code in get_valcode(conn):
+        data = []
+        for row in get_from_db(conn, get_stats, (val_code, )):
+            year = row[0]  # string
+            if year.isdigit():
+                if int(year) > 2011:
+                    data.append(row)
+        show_result('Year', val_code, data)
 
 
 def auctions_year(conn, year, in_out):
     """We draw up an auction report for the year."""
-    date_field_inout = get_date_inout(in_out)
+    column_inout = get_date_inout(in_out)
+    if not column_inout:
+        show_report("Invalid parameter '{}' in function 'auctions_year()'.".format(in_out))
+        return False
+
     get_months = "SELECT DISTINCT strftime('%m', date_in) as month \
                                                     FROM auctions \
                                                     ORDER BY month ASC;"
@@ -184,25 +186,23 @@ def auctions_year(conn, year, in_out):
                                 FROM auctions \
                                 WHERE val_code = ? AND {0} LIKE ? \
                                 GROUP BY month \
-                                ORDER BY month ASC;".format(date_field_inout)
-    if date_field_inout:
-        show_report("\n= Money {} / Year: {} =".format(in_out.upper(), year))
-        show_report()
-        for val_code in get_valcode(conn):
-            data = []
-            months = [x[0] for x in get_from_db(conn, get_months)]
-            for month in months:
-                # Format date '2019-08-__' for sql query LIKE
-                date_search = '-'.join((str(year), month, '__'))
-                answer = get_from_db(conn, get_stats, (val_code, date_search))
-                if answer:
-                    month, count, money = answer[0]
-                    data.append((month, count, money))
-                else:
-                    data.append((month, 0, 0))
-            show_result('Month', val_code, data)
-    else:
-        show_report("Invalid parameter '{}' in function 'auctions_year()'.".format(in_out))
+                                ORDER BY month ASC;".format(column_inout)
+
+    show_report("\n= Money {} / Year: {} =".format(in_out.upper(), year))
+    show_report()
+    for val_code in get_valcode(conn):
+        data = []
+        months = [x[0] for x in get_from_db(conn, get_months)]
+        for month in months:
+            # Format date '2019-08-__' for sql query LIKE
+            date_search = '-'.join((str(year), month, '__'))
+            answer = get_from_db(conn, get_stats, (val_code, date_search))
+            if answer:
+                month, count, money = answer[0]
+                data.append((month, count, money))
+            else:
+                data.append((month, 0, 0))
+        show_result('Month', val_code, data)
 
 
 def auctions_all(conn):
@@ -277,11 +277,11 @@ def auctions_report(conn, to_save=False):
             print(answer)
             return False
 
-    # auctions_stats(conn, in_out='in')
+    auctions_stats(conn, in_out='in')
     # auctions_stats(conn, in_out='out')
     # auctions_year(conn, 2018, in_out='in')
     # auctions_year(conn, 2018, in_out='out')
-    auctions_all(conn)
+    # auctions_all(conn)
     # auctions_paginated(conn)
 
 

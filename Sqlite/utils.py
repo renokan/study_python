@@ -27,7 +27,7 @@ def old_insert_row_data(connection, query, data):
         return True
 
 
-def insert_row_data(connection, query, data):
+def insert_in_db(connection, query, data):
     try:
         connection.execute(query, data)
     except sqlite3.IntegrityError:

@@ -138,12 +138,12 @@ def get_date_inout(in_out_key):
 
 def show_result(title, val_code, data):
     """Show report data."""
-    show_report("{:6} {:<6} {}, {}".format(title, 'Count', 'Money', val_code))
-    show_report("{:6} {:<6} {}".format('-' * 4, '-' * 5, '-' * 10))
+    show_report("{:^7} {:<6} {}, {}".format(title, 'Count', 'Money', val_code))
+    show_report("{:^7} {:<6} {}".format('-' * 7, '-' * 5, '-' * 10))
     for row in data:
         period, count, money = row
         money = round(money, 2)
-        show_report("{:<6} {:^6} {}".format(period, count, money))
+        show_report("{:^7} {:^6} {}".format(period, count, money))
     show_report()
 
 
@@ -177,30 +177,26 @@ def auctions_year(conn, year, in_out):
         show_report("Invalid parameter '{}' in function 'auctions_year()'.".format(in_out))
         return False
 
-    get_months = "SELECT DISTINCT strftime('%m', date_in) as month \
-                                                    FROM auctions \
-                                                    ORDER BY month ASC;"
-    get_stats = "SELECT strftime('%m', {0}) as month, COUNT(), SUM(money) \
-                                FROM auctions \
-                                WHERE val_code = ? AND {0} LIKE ? \
-                                GROUP BY month \
-                                ORDER BY month ASC;".format(column_inout)
+    query = "SELECT CAST(strftime('%m', {0}) as INTEGER) as month, COUNT(), SUM(money) \
+                            FROM auctions \
+                            WHERE val_code = ? AND  \
+                                  CAST(strftime('%Y', {0}) as INTEGER) = ? \
+                            GROUP BY month \
+                            ORDER BY month ASC;".format(column_inout)
 
     show_report("\n= Money {} / Year: {} =".format(in_out.upper(), year))
     show_report()
     for val_code in get_valcode(conn):
-        data = []
-        months = [x[0] for x in get_from_db(conn, get_months)]
-        for month in months:
-            # Format date '2019-08-__' for sql query LIKE
-            date_search = '-'.join((str(year), month, '__'))
-            answer = get_from_db(conn, get_stats, (val_code, date_search))
-            if answer:
-                month, count, money = answer[0]
-                data.append((month, count, money))
-            else:
-                data.append((month, 0, 0))
-        show_result('Month', val_code, data)
+        result = []
+        data = get_from_db(conn, query, (val_code, year))
+        for month in range(1, 13):
+            count = 0
+            money = 0
+            for row in data:
+                if row[0] == month:
+                    _, count, money = row
+            result.append((month, count, money))
+        show_result('Month', val_code, result)
 
 
 def auctions_all(conn):
@@ -288,5 +284,6 @@ if __name__ == '__main__':
     if conn:
         if os.path.exists(DATA_FILE):
             insert_data(conn, DATA_FILE)
-        auctions_report(conn)  # (conn, to_save=True)
+        auctions_report(conn)
+        # auctions_report(conn, to_save=True)
         conn.close()

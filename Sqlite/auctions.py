@@ -14,8 +14,9 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 DATA_FILE = os.path.join(basedir, 'auctions.json')
 DB_FILE = os.path.join(basedir, 'auctions.db')
 REPORT_FILE = os.path.join(basedir, 'auctions.txt')
-
-save_report = {'status': False,
+# To save report (status=True) or not (status=False) - only print data.
+DEFAULT_SAVE = False
+save_report = {'status': DEFAULT_SAVE,
                'path': REPORT_FILE}
 
 
@@ -261,15 +262,17 @@ def auctions_paginated(conn):
         print(result)
 
 
-def auctions_report(conn, to_save=False):
+def auctions_report(conn, to_save=DEFAULT_SAVE):
     """We prepare reports."""
     if to_save is True:
         save_report['status'] = True
-        answer = show_report(mode_open='w')  # cleared report file
-        if answer is not True:
-            save_report['status'] = False
-            print(answer)
+        empty_report = show_report(mode_open='w')
+        if empty_report is not True:
+            save_report['status'] = DEFAULT_SAVE
+            print(empty_report)
             return False
+    else:
+        save_report['status'] = DEFAULT_SAVE
 
     auctions_stats(conn, in_out='in')
     auctions_stats(conn, in_out='out')

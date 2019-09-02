@@ -60,7 +60,7 @@ def get_data(path_to_data):
     try:
         data = json.load(open(path_to_data, encoding='utf-8'))
     except Exception as err_load:
-        show_report("Error json_load: ", str(err_load))
+        show_report("Error json_load: {}".format(str(err_load)))
     else:
         if data[0].get('auctiondate'):
             result = []

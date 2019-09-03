@@ -51,6 +51,8 @@ def activate_log(path_to_logs, mode_debug=False):
             "logFileDebug": {
                 "class": "logging.FileHandler",
                 "formatter": "verbose",
+                "mode": "a",
+                "encoding": "utf8",
                 "filename": log_debug
             },
             "console": {
@@ -63,6 +65,7 @@ def activate_log(path_to_logs, mode_debug=False):
                 "formatter": "verbose",
                 "backupCount": 3,
                 "maxBytes": 102400,
+                "encoding": "utf8",
                 "filename": log_app
             }
         },
@@ -85,11 +88,11 @@ def activate_log(path_to_logs, mode_debug=False):
 
 
 if __name__ == '__main__':
-    logger = activate_log(BASEDIR)
+    logger = activate_log(BASEDIR, True)
 
     for x in range(50):
         logger.debug('This is a debug message')
         logger.info('This is an info message')
         logger.warning('This is a warning message')
         logger.error('This is an error message')
-        logger.critical('This is a critical message')
+        logger.critical('Тест This is a critical message')
